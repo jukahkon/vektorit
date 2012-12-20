@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <?php require("head.php") ?>
-<?php require("db_connect.php") ?>
 
 <script type="text/javascript">
 

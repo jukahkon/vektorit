@@ -1,13 +1,23 @@
 <?php
 
-require_once("db_connect.php");
-
 class DbUtil {
+    
+    public static function db() {
+        static $__db = null;
+        
+        if ($__db == null) {
+            try {
+                $__db = new PDO("mysql:host=localhost;dbname=vektorit", "vektoritsite", "vektorit");
+            } catch (Exception $e) {
+                error_log("Cannot connect to database: $e");
+            }
+        }
+        
+        return $__db;
+    }
 
     public static function user_exists($email) {
-        global $db;
-
-        $query = $db->prepare("SELECT 1 FROM user WHERE email=?");
+        $query = self::db()->prepare("SELECT 1 FROM user WHERE email=?");
         $query->bindParam(1,$email);
         $query->execute();
 
@@ -15,9 +25,7 @@ class DbUtil {
     }
 
     public static function nick_exists($nick) {
-        global $db;
-
-        $query = $db->prepare("SELECT 1 FROM user WHERE nickname=?");
+        $query = self::db()->prepare("SELECT 1 FROM user WHERE nickname=?");
         $query->bindParam(1,$nick);
         $query->execute();
 
@@ -25,9 +33,7 @@ class DbUtil {
     }
 
     public static function add_new_user($email,$nick,$pass,$salt) {
-        global $db;
-
-        $query = $db->prepare("INSERT INTO user (email,password,salt,nickname) VALUES(?,?,?,?)");
+        $query = self::db()->prepare("INSERT INTO user (email,password,salt,nickname) VALUES(?,?,?,?)");
         $query->bindParam(1,$email);
         $query->bindParam(2,$pass);
         $query->bindParam(3,$salt);
@@ -37,9 +43,7 @@ class DbUtil {
     }
 
     public static function user_id_by_email($email) {
-        global $db;
-
-        $query = $db->prepare("SELECT id FROM user WHERE email=?");
+        $query = self::db()->prepare("SELECT id FROM user WHERE email=?");
         $query->bindParam(1,$email);
         $query->execute();
 
