@@ -4,7 +4,7 @@ function createHeader($page) {
     echo '<div id="header">';
     echo '<div class="navbar">';
         echo '<div class="navbar-inner">';
-            echo '<a class="brand" href="#">Vektor IT</a>';
+            echo '<a class="brand" href="index.php">Sports Logger</a>';
             
             if ($page == "login") {
                 echo '<ul class="nav pull-right">';

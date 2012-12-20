@@ -1,7 +1,7 @@
 <?php
+session_start();
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+echo "Homepage: " . $_SESSION["user_id"];
+
 ?>
+
