@@ -27,7 +27,8 @@ body {
     margin: 140px auto;
 }
 
-#login_reg_link {
+#registration_container {
+    width: 50%;
+    margin: 120px auto;
 }
-
 
