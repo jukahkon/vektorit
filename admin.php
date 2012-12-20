@@ -24,10 +24,10 @@ function handleRegistration() {
     $pass = $_POST["pass"];
     $pass2 = $_POST["pass2"];
     
-    if (db_user_exists($user)) {
+    if (DbUtil::user_exists($user)) {
         return "already_registered";
     } 
-    else if (db_nick_exists($nick)) {
+    else if (DbUtil::nick_exists($nick)) {
         return "nick_in_use";
     } 
     else if ($pass != $pass2) {
@@ -36,10 +36,10 @@ function handleRegistration() {
 
     $hashedPass = sha1("$pass"."$salt");
 
-    db_add_new_user($user,$nick,$hashedPass,$salt);
+    DbUtil::add_new_user($user,$nick,$hashedPass,$salt);
     
     session_regenerate_id(true);
-    $_SESSION['user_id'] = db_user_id_by_email($user);
+    $_SESSION['user_id'] = DbUtil::user_id_by_email($user);
     session_write_close();
         
     return "ok";
