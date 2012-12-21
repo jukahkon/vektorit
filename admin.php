@@ -13,16 +13,18 @@ if (isset($_GET["op"])) {
     die();
 }
 
+if ($_POST["op"]=="login") {
+    handleLogin();
+    die();
+} 
+
 // 
-// Registration and login is via AJAX
+// Registration is via AJAX
 //
 if (isset($_POST["op"])) {
     if ($_POST["op"]=="register") {
         $result = handleRegistration();
-    } 
-    else if ($_POST["op"]=="login") {
-        $result = handleLogin();
-    } 
+    }     
     else {
         echo "unknown_operation";
     }
@@ -62,15 +64,23 @@ function handleLogin() {
     $user = $_POST['user'];
     $pass = $_POST['pass'];
 
+    $_SESSION["login_email"] = $user;
+    
     if (!DbUtil::user_exists($user)) {
-        return "account_not_found";
+        $_SESSION["login_status"] = "account_not_found";        
+        header("Location: login.php");
+        exit();
     }
 
     if (!DbUtil::user_autenthicate($user,$pass)) {
-        return "incorrect_password";
+        $_SESSION["login_status"] = "incorrect_password";
+        header("Location: login.php");
+        exit();
     }
-
+    
     createSession($user);
+    header("Location: home.php");
+    exit();
 }
 
 function createSession($user) {
@@ -87,6 +97,7 @@ function handleLogout() {
     session_unset();
     session_destroy();
     header("Location: login.php");
+    exit();
 }
 
 ?>
