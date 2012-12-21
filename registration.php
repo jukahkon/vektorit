@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <?php require("head.php") ?>
 
+</head>
+
 <script type="text/javascript">
 
     $(document).ready( function () {

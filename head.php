@@ -5,3 +5,4 @@
     
     <script src="assets/jquery/jquery-1.8.3.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="script/vektorit.js"></script>

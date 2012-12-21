@@ -3,17 +3,18 @@
 class DbUtil {
     
     public static function db() {
-        static $__db = null;
+        static $db_connection = null;
         
-        if ($__db == null) {
+        if ($db_connection == null) {
             try {
-                $__db = new PDO("mysql:host=localhost;dbname=vektorit", "vektoritsite", "vektorit");
+                $db_connection = new PDO("mysql:host=localhost;dbname=vektorit", "vektorit", "vektorit");
+                $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (Exception $e) {
                 error_log("Cannot connect to database: $e");
             }
         }
         
-        return $__db;
+        return $db_connection;
     }
 
     public static function user_exists($email) {
@@ -51,9 +52,30 @@ class DbUtil {
             $row = $query->fetch();
             return $row["id"];
         } else {
-            return -1;
+            return 0;
         }    
     }
+    
+    public static function user_autenthicate($email,$pass) {
+        $query = self::db()->prepare("SELECT password,salt FROM user WHERE email=?");
+        $query->bindParam(1,$email);
+        $query->execute();
+
+        if ($query->rowCount()==1) {
+            $row = $query->fetch();
+            $password = $row["password"];
+            $salt = $row["salt"];
+            
+            $hashedPass = sha1($pass . $salt);
+            
+            return $password == $hashedPass ? true : false;
+            
+        } else {
+            return false;
+        }    
+    }
+    
+ 
 
 } // class
 
