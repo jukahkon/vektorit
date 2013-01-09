@@ -16,7 +16,7 @@ function createHeader($page) {
                     echo '<ul class="nav">';
                         echo '<li class="active"><a href="#">Omat kilometrit</a></li>';
                         echo '<li><a href="#">Joukkueen tiedot</a></li>';
-                        echo '<li><a href="#">Profiili</a></li>';
+                        echo '<li><a href="#">Asetukset</a></li>';
                     echo '</ul>';
                                         
                     echo '<ul class="nav pull-right">';

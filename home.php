@@ -2,6 +2,8 @@
 <?php require("head.php") ?>
 <?php /*require("session_handler.php")*/ ?>
 
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
+
 </head>
 
 <script type="text/javascript">
@@ -11,7 +13,22 @@
         $('#dateinput').datepicker( 'setDate', new Date() );        
         
         resizeContent();
+        initializeMap();
     });
+    
+    function initializeMap() {
+        // return;
+        
+        // create map
+        var mapOptions = {
+            center: new google.maps.LatLng(65.017, 25.467),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            disableDefaultUI: true
+	};
+	
+	var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+    }
     
     function resizeContent() {
         console.log("Container height: " +$('#container').height());
@@ -20,6 +37,8 @@
         var contentHeight = $('#container').height() - $('#header').outerHeight(true) - $('#footer').outerHeight(true);
         $('#content').height(contentHeight);
         console.log("Content height: " +contentHeight);
+        var mapHeight = contentHeight - $('#map_controls').height() - $('#map_controls_bottom').height();
+        $('#map_canvas').height(mapHeight);
     }    
     
 </script>
@@ -61,7 +80,6 @@
                             <tr><td>4</td><td>5.1.2013</td><td>62,50</td></tr>
                             <tr><td>5</td><td>5.1.2013</td><td>62,50</td></tr>
                             <tr><td>6</td><td>5.1.2013</td><td>62,50</td></tr>
-                            <tr><td>7</td><td>5.1.2013</td><td>62,50</td></tr>
                         </tbody>
                     </table>
                     <div id="pageSelector" class="pagination">
@@ -79,8 +97,17 @@
             </div>
             
             <div id="mapPanel">
-                <div id="controlPanel">
+                <div id="map_controls">
+                    <div id="total_km">Total: 652,15 km</div>
+                    <div id="coordinates">25.123456, 63.123456</div>
                     
+                    <button id="cameraButton" class="btn btn-inverse icon-camera"></button>
+                    
+                </div>    
+                <div id="map_canvas">
+                    
+                </div>
+                <div id="map_controls_bottom">
                 </div>
             </div>
         </div>

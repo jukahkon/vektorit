@@ -1,5 +1,6 @@
 <head>
     <meta charset="UTF-8" />
+    <title>Vektorit</title>
     <link href="assets/bootstrap/themes/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="assets/jquery-ui/css/flick/jquery-ui-1.9.2.custom.min.css"/>
     <link href="css/vektorit.css" rel="stylesheet" media="screen">
