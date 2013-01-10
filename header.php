@@ -4,7 +4,7 @@ function createHeader($page) {
     echo '<div id="header">';
         echo '<div class="navbar">';
             echo '<div class="navbar-inner">';
-                echo '<a class="brand" href="index.php">Vektorit</a>';
+                echo '<a class="brand" href="home.php">Vektorit</a>';
 
                 if ($page == "login") {
                     echo '<ul class="nav pull-right">';
@@ -14,9 +14,27 @@ function createHeader($page) {
                 }
                 else if ($page != "registration") {
                     echo '<ul class="nav">';
-                        echo '<li class="active"><a href="#">Omat kilometrit</a></li>';
-                        echo '<li><a href="#">Joukkueen tiedot</a></li>';
-                        echo '<li><a href="#">Asetukset</a></li>';
+                        if ($page == "home") {
+                            echo '<li class="active">';
+                        } else {
+                            echo '<li>';
+                        }
+                        echo '<a href="home.php">Omat tiedot</a></li>';
+                        
+                        if ($page == "team") {
+                            echo '<li class="active">';
+                        } else {
+                            echo '<li>';
+                        }
+                        echo '<a href="team.php">Joukkueen tiedot</a></li>';
+                                                
+                        if ($page == "messages") {
+                            echo '<li class="active">';
+                        } else {
+                            echo '<li>';
+                        }                        
+                        echo '<a href="messages.php">Viestit</a></li>';
+                        
                     echo '</ul>';
                                         
                     echo '<ul class="nav pull-right">';

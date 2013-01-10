@@ -89,12 +89,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>1</td><td>5.1.2013</td><td>62,50</td></tr>
-                            <tr><td>2</td><td>5.1.2013</td><td>62,50</td></tr>
-                            <tr><td>3</td><td>5.1.2013</td><td>62,50</td></tr>
-                            <tr><td>4</td><td>5.1.2013</td><td>62,50</td></tr>
-                            <tr><td>5</td><td>5.1.2013</td><td>62,50</td></tr>
-                            <tr><td>6</td><td>5.1.2013</td><td>62,50</td></tr>
+                            <tr><td>1</td><td>5.1.2013</td><td>62,50 km</td></tr>
+                            <tr><td>2</td><td>5.1.2013</td><td>62,50 km</td></tr>
+                            <tr><td>3</td><td>5.1.2013</td><td>62,50 km</td></tr>
+                            <tr><td>4</td><td>5.1.2013</td><td>62,50 km</td></tr>
+                            <tr><td>5</td><td>5.1.2013</td><td>62,50 km</td></tr>
+                            <tr><td>6</td><td>5.1.2013</td><td>62,50 km</td></tr>
                         </tbody>
                     </table>
                     <div id="pageSelector" class="pagination">
@@ -120,10 +120,10 @@
                     </div>
                     
                     <div id="street_view_controls" style="display:none">
-                        <button id="streetPlayButton" class="btn btn-info map-button">Play</button>
                         <div id="leg" class="map_control_label">Osuus: #1</div>
                         <div id="leg" class="map_control_label">Pvm: 5.1.2013</div>
-                        <div id="leg" class="map_control_label">Osamatka: 62,50 km</div>                        
+                        <div id="leg" class="map_control_label">Osamatka: 62,50 km</div>
+                        <button id="streetPlayButton" class="btn btn-info map-button">Play</button>
                     </div>
                     
                     <button id="mapModeButton" class="btn btn-warning map-button">Katutaso</button>                    
@@ -147,5 +147,5 @@
 
     </div>    
 </body>
-
+</html>
 
