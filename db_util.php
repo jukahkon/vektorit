@@ -75,8 +75,29 @@ class DbUtil {
         }    
     }
     
- 
+    public static function update_trip($user,$distance,$date) {
+        // add new or update existing
+        $query = self::db()->prepare("SELECT id FROM trip WHERE user=? AND date=?");
+        $query->bindParam(1,$user);
+        $query->bindParam(2,$date);
+        $query->execute();
 
+        if ($query->rowCount()==1) {
+            $row = $query->fetch();
+            $id = $row["id"];
+            $query = self::db()->prepare("UPDATE trip SET distance=? WHERE id=?");
+            $query->bindParam(1,$distance);
+            $query->bindParam(2,$id);
+            $query->execute();            
+        } else {
+            $query = self::db()->prepare("INSERT INTO trip (user,distance,date) VALUES(?,?,?)");
+            $query->bindParam(1,$user);
+            $query->bindParam(2,$distance);
+            $query->bindParam(3,$date);
+            $query->execute();
+        }
+    }
+    
 } // class
 
 ?>

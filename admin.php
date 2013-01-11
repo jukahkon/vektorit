@@ -13,10 +13,12 @@ if (isset($_GET["op"])) {
     die();
 }
 
-if ($_POST["op"]=="login") {
-    handleLogin();
-    die();
-} 
+if (isset($_POST["op"])) {
+    if ($_POST["op"]=="login") {
+        handleLogin();
+        die();
+    }
+}
 
 // 
 // Registration is via AJAX

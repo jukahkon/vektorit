@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php require("head.php") ?>
-<?php /*require("session_handler.php")*/ ?>
+<?php require("session_handler.php") ?>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
 
@@ -9,8 +9,8 @@
 <script type="text/javascript">
 
     $(document).ready( function () {
-        $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy" } );
-        $('#dateinput').datepicker( 'setDate', new Date() );        
+        $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy", altFormat: "yy-mm-dd", altField: "#alt_date" } );
+        $('#dateinput').datepicker( 'setDate', new Date() );
         
         resizeContent();
         initializeMap();
@@ -31,9 +31,40 @@
                 $("#mapModeButton").text('Kartta');
             }
         });
+        
+        $("#tripInputForm").submit( function() {
+            var value = $('#distanceInput').val().replace(",",".");
+            if (!value) {
+                value = "0";
+            }
+            var distance = parseFloat(value);
+            if (isNaN(distance)) {
+                return false;
+            }
+            
+            var params = "date=" + $('#alt_date').val();
+            params += "&distance=" + distance.toFixed(2);            
+            console.log("Handle trip submit: " + params);
+            
+            $.post("trip_post.php", params, function(data) {
+                console.log(data);
+            });
+            
+            return false;
+        });
+        
+        $('#distanceInput').keypress(function(event) {
+            if (event.which != 44 && (event.which < 48 || event.which > 57))
+            {
+                event.preventDefault();
+            }            
+        });        
+        
     });
     
     function initializeMap() {
+        return;
+        
         // create map
         var mapOptions = {
             center: new google.maps.LatLng(65.017, 25.467),
@@ -68,14 +99,15 @@
         <div id="content">
             <div id="dataPanel">
                 <div id="dataInput">
-                    <form class="well">
+                    <form id="tripInputForm" class="well">
                         <fieldset>
                             <label>Päivämäärä</label>
                             <div class="controls">
                                 <input id="dateinput" type="text"></input>
+                                <input id="alt_date" type="hidden"></input>
                             </div>
                             <label>Kilometrit</label>
-                                <input type="text" placeholder="0,00"></input>
+                                <input id="distanceInput" type="text" placeholder="0,00"></input>
                             </fieldset>							
                         <button type="submit" class="btn btn-success">Päivitä</button>
                     </form>
