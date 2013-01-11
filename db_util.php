@@ -98,6 +98,13 @@ class DbUtil {
         }
     }
     
+    public static function get_trips($user) {
+        $query = self::db()->prepare("SELECT * FROM trip WHERE user=?");
+        $query->bindParam(1,$user);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 } // class
 
 ?>

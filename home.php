@@ -42,12 +42,15 @@
                 return false;
             }
             
+            var distance = Math.round((distance*100)/100);            
             var params = "date=" + $('#alt_date').val();
-            params += "&distance=" + distance.toFixed(2);            
+            params += "&distance=" + distance.toString();            
             console.log("Handle trip submit: " + params);
             
-            $.post("trip_post.php", params, function(data) {
-                console.log(data);
+            $.post("trip_post.php", params, function(status) {
+                if (status=="ok") {
+                    updateTripTable();
+                }
             });
             
             return false;
@@ -60,6 +63,7 @@
             }            
         });        
         
+        updateTripTable();
     });
     
     function initializeMap() {
@@ -82,10 +86,26 @@
         console.log("Footer height: " +$('#footer').outerHeight(true));
         var contentHeight = $('#container').height() - $('#header').outerHeight(true) - $('#footer').outerHeight(true);
         $('#content').height(contentHeight);
-        console.log("Content height: " +contentHeight);
         var mapHeight = contentHeight - $('#map_controls_container').height();
         $('#mapContainer').height(mapHeight);
     }    
+    
+    function updateTripTable() {
+        $.get("trip_get.php", "", function(data) {
+            var trips = JSON.parse(data);
+            console.log("updateTripTable: " +trips);
+            if (trips.length > 0) {
+                $("#dataTable").show();
+                $("#tripRows").empty();
+            }
+            
+            for (var i=0; i < trips.length; i++) {
+                var trip = trips[i];
+                var row = "<tr><td>" + trip.id + "</td><td>" + trip.date + "</td><td>" + trip.distance.replace(".",",") + "</td></tr>";
+                $("#tripRows").append(row);
+            }            
+        });
+    }
     
 </script>
 
@@ -113,23 +133,23 @@
                     </form>
                 </div>
                 
-                <div id="dataTable">
+                <div id="dataTable" style="display:none">
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>#</th><th>Päivämäärä</th><th>Kilometrit</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr><td>1</td><td>5.1.2013</td><td>62,50 km</td></tr>
+                        <tbody id= "tripRows">
+<!--                        <tr><td>1</td><td>5.1.2013</td><td>62,50 km</td></tr>
                             <tr><td>2</td><td>5.1.2013</td><td>62,50 km</td></tr>
                             <tr><td>3</td><td>5.1.2013</td><td>62,50 km</td></tr>
                             <tr><td>4</td><td>5.1.2013</td><td>62,50 km</td></tr>
                             <tr><td>5</td><td>5.1.2013</td><td>62,50 km</td></tr>
-                            <tr><td>6</td><td>5.1.2013</td><td>62,50 km</td></tr>
+                            <tr><td>6</td><td>5.1.2013</td><td>62,50 km</td></tr> -->
                         </tbody>
                     </table>
-                    <div id="pageSelector" class="pagination">
+                    <div id="pageSelector" class="pagination" style="display:none">
                         <ul>
                             <li><a href="#">Prev</a></li>
                             <li><a href="#">1</a></li>
