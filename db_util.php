@@ -99,7 +99,7 @@ class DbUtil {
     }
     
     public static function get_trips($user) {
-        $query = self::db()->prepare("SELECT * FROM trip WHERE user=?");
+        $query = self::db()->prepare("SELECT * FROM trip WHERE user=? ORDER BY date DESC");
         $query->bindParam(1,$user);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);

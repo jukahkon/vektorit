@@ -3,6 +3,7 @@
 <?php require("session_handler.php") ?>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
+<script src="script/trip_table.js"></script>
 
 </head>
 
@@ -42,7 +43,7 @@
                 return false;
             }
             
-            var distance = Math.round((distance*100)/100);            
+            var distance = distance.toFixed(2);            
             var params = "date=" + $('#alt_date').val();
             params += "&distance=" + distance.toString();            
             console.log("Handle trip submit: " + params);
@@ -68,7 +69,6 @@
     
     function initializeMap() {
         return;
-        
         // create map
         var mapOptions = {
             center: new google.maps.LatLng(65.017, 25.467),
@@ -89,23 +89,6 @@
         var mapHeight = contentHeight - $('#map_controls_container').height();
         $('#mapContainer').height(mapHeight);
     }    
-    
-    function updateTripTable() {
-        $.get("trip_get.php", "", function(data) {
-            var trips = JSON.parse(data);
-            console.log("updateTripTable: " +trips);
-            if (trips.length > 0) {
-                $("#dataTable").show();
-                $("#tripRows").empty();
-            }
-            
-            for (var i=0; i < trips.length; i++) {
-                var trip = trips[i];
-                var row = "<tr><td>" + trip.id + "</td><td>" + trip.date + "</td><td>" + trip.distance.replace(".",",") + "</td></tr>";
-                $("#tripRows").append(row);
-            }            
-        });
-    }
     
 </script>
 
@@ -150,13 +133,13 @@
                         </tbody>
                     </table>
                     <div id="pageSelector" class="pagination" style="display:none">
-                        <ul>
-                            <li><a href="#">Prev</a></li>
+                        <ul id="pageList">
+<!--                            <li><a href="#">Prev</a></li>
                             <li><a href="#">1</a></li>
                             <li><a href="#">2</a></li>
                             <li><a href="#">3</a></li>
                             <li><a href="#">4</a></li>
-                            <li><a href="#">Next</a></li>
+                            <li><a href="#">Next</a></li>-->
                         </ul>
                     </div>
                 </div>                

@@ -61,7 +61,7 @@ body {
 
 #dataPanel {
     float: left;
-    width: 270px;
+    width: 260px;
     height: 100%;
     /* background-color: green; */
 }
@@ -80,7 +80,7 @@ body {
 
 #mapPanel {
     float: left;
-    width: 680px;
+    width: 690px;
     /* background-color: black; */
     margin-left: 10px;
 }
