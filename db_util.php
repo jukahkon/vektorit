@@ -34,6 +34,7 @@ class DbUtil {
     }
 
     public static function add_new_user($email,$nick,$pass,$salt) {
+        error_log("add_new_user()");
         $query = self::db()->prepare("INSERT INTO user (email,password,salt,nickname) VALUES(?,?,?,?)");
         $query->bindParam(1,$email);
         $query->bindParam(2,$pass);
@@ -41,6 +42,12 @@ class DbUtil {
         $query->bindParam(4,$nick);
 
         $query->execute();
+    }
+    
+    public static function remove_all_users() {
+        error_log("remove_all_users()");
+        $query = self::db()->prepare("DELETE FROM user");
+        $query->execute();        
     }
 
     public static function user_id_by_email($email) {
@@ -103,6 +110,18 @@ class DbUtil {
         $query->bindParam(1,$user);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public static function remove_all_trips() {
+        error_log("remove_all_trips()");
+        $query = self::db()->prepare("DELETE FROM trip");
+        $query->execute();        
+    }
+    
+    public static function get_users() {
+        $query = self::db()->prepare("SELECT id FROM user");
+        $query->execute();
+        return $query->fetchAll();
     }
     
 } // class
