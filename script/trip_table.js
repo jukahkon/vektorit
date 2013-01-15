@@ -51,8 +51,8 @@ function showTripPage(page) {
 function updatePageSelector(currentPage) {
     var tripCount = trips.length;
     var pageCount = tripCount / tripsPerPage;
-    var firstPage = currentPage;
-    var lastPage = 2;
+    var firstPage = 1;
+    var lastPage = Math.ceil(pageCount);
     
     $("#pageList").empty();
     
