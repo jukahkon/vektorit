@@ -13,7 +13,7 @@
         $('#dateinput').datepicker( 'setDate', new Date() );
         
         $(".generateForm").submit( function() {
-            console.log("generateUsersFrom submit");
+            console.log("Submit test data");
             
             $.post("test_data_post.php", $(this).serialize(), function(status) {
                 if (status!="ok") {
@@ -36,7 +36,7 @@
         });
         
         $("#resetTripTable").click( function(event) {
-            console.log("resetUserTable");
+            console.log("resetTripTable");
             $.post("test_data_post.php", "op=removeAllTrips", function(status) {
                 if (status!="ok") {
                     alert("Operation failed:" +status); 
@@ -104,7 +104,7 @@
                     
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">Generate</button>
-                        <button id="resetUserTable" class="btn btn-danger">Reset Trips Table</button>
+                        <button id="resetTripTable" class="btn btn-danger">Reset Trips Table</button>
                     </div>
                 </form>
             </div>

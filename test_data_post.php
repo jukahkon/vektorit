@@ -106,8 +106,9 @@ function generateTrips() {
             $date .= "-" . strval($d);
             
             error_log("Create trip: " . $user["id"] . " " . $distance . " " . $date );
+            DbUtil::update_trip($user["id"], $distance, $date);
             
-            // Update date
+            // Update date for the next round
             if ($d > 1) {
                 $d--;
             } else {
@@ -124,7 +125,6 @@ function generateTrips() {
         }
     }
     
-    /* DbUtil::update_trip($user,$distance,$date); */
     
     return "ok";
 }
