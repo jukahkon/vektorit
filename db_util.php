@@ -124,6 +124,26 @@ class DbUtil {
         return $query->fetchAll();
     }
     
+    public static function get_total_distance($user) {
+        $query = self::db()->prepare("SELECT SUM(distance) AS total FROM trip WHERE user=?");
+        $query->bindParam(1,$user);
+        $query->execute();
+        
+        if ($query->rowCount()==1) {
+            $row = $query->fetch();
+            return $row["total"] ? $row["total"] : 0;
+        } else {
+            return 0;
+        } 
+    }
+    
+    public static function find_step_for_distance($distance) {
+        $query = self::db()->prepare("SELECT * FROM step WHERE distance >= ? LIMIT 1");
+        $query->bindParam(1,$distance);
+        $query->execute();
+        return $query->fetch();
+    }
+    
 } // class
 
 ?>

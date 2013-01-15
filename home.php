@@ -65,6 +65,8 @@
         });        
         
         updateTripTable();
+        
+        showCurrentLocation();
     });
     
     function initializeMap() {
@@ -88,7 +90,11 @@
         $('#content').height(contentHeight);
         var mapHeight = contentHeight - $('#map_controls_container').height();
         $('#mapContainer').height(mapHeight);
-    }    
+    }
+
+    function showCurrentLocation() {
+        
+    }
     
 </script>
 
@@ -124,22 +130,10 @@
                             </tr>
                         </thead>
                         <tbody id= "tripRows">
-<!--                        <tr><td>1</td><td>5.1.2013</td><td>62,50 km</td></tr>
-                            <tr><td>2</td><td>5.1.2013</td><td>62,50 km</td></tr>
-                            <tr><td>3</td><td>5.1.2013</td><td>62,50 km</td></tr>
-                            <tr><td>4</td><td>5.1.2013</td><td>62,50 km</td></tr>
-                            <tr><td>5</td><td>5.1.2013</td><td>62,50 km</td></tr>
-                            <tr><td>6</td><td>5.1.2013</td><td>62,50 km</td></tr> -->
                         </tbody>
                     </table>
                     <div id="pageSelector" class="pagination" style="display:none">
                         <ul id="pageList">
-<!--                            <li><a href="#">Prev</a></li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">Next</a></li>-->
                         </ul>
                     </div>
                 </div>                

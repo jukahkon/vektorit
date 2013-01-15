@@ -16,8 +16,24 @@ function storeTripData() {
     
     DbUtil::update_trip($user, $distance, $date);
     
+    updateLocation($user);
+    
     return "ok";
 }
 
+function updateLocation($user) {    
+    $totalDistance = DbUtil::get_total_distance($user) . "\n";
+    
+    $step = DbUtil::find_step_for_distance($totalDistance);
+    
+    echo print_r($step);
+    echo "\n";
+    
+    if (!empty($step)) {
+        // DbUtil::update_location($user, $step["lat"], $step["lat"], $step["lat"] );
+    }    
+    echo "\n";
+    
+}
 
 ?>
