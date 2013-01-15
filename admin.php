@@ -81,6 +81,7 @@ function handleLogin() {
     }
     
     createSession($user);
+    setInitialLocation($user);
     header("Location: home.php");
     exit();
 }
@@ -93,6 +94,16 @@ function createSession($user) {
     session_regenerate_id(true);
     $_SESSION['user_id'] = $user_id;
     session_write_close();
+}
+
+function setInitialLocation($user) {    
+    $step = DbUtil::find_step_for_distance(0);
+    
+    if ($step) {
+        DbUtil::update_location($user, $step);
+    } else {
+        error_log("Location init failed!");
+    }
 }
 
 function handleLogout() {

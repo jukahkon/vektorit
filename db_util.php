@@ -138,10 +138,32 @@ class DbUtil {
     }
     
     public static function find_step_for_distance($distance) {
-        $query = self::db()->prepare("SELECT * FROM step WHERE distance >= ? LIMIT 1");
+        $query = self::db()->prepare("SELECT id FROM step WHERE distance >= ? LIMIT 1");
         $query->bindParam(1,$distance);
         $query->execute();
-        return $query->fetch();
+        $row = $query->fetch();
+        return $row["id"] ? $row["id"] : 0;
+    }
+    
+    public static function update_location($user, $step) {
+        // add new or update existing
+        $query = self::db()->prepare("SELECT id FROM location WHERE user=?");
+        $query->bindParam(1,$user);
+        $query->execute();
+
+        if ($query->rowCount()==1) {
+            $row = $query->fetch();
+            $id = $row["id"];
+            $query = self::db()->prepare("UPDATE location SET step=? WHERE id=?");
+            $query->bindParam(1,$step);
+            $query->bindParam(2,$id);
+            $query->execute();
+        } else {
+            $query = self::db()->prepare("INSERT INTO location (user,step) VALUES(?,?)");
+            $query->bindParam(1,$user);
+            $query->bindParam(2,$step);
+            $query->execute();
+        }
     }
     
 } // class
