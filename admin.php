@@ -58,6 +58,8 @@ function handleRegistration() {
     DbUtil::add_new_user($user,$nick,$hashedPass,$salt);
     
     createSession($user);
+    
+    setInitialLocation($_SESSION['user_id']);
         
     return "ok";
 }
@@ -80,8 +82,7 @@ function handleLogin() {
         exit();
     }
     
-    createSession($user);
-    setInitialLocation($user);
+    createSession($user);    
     header("Location: home.php");
     exit();
 }

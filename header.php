@@ -22,14 +22,14 @@ function createHeader($page) {
                         } else {
                             echo '<li>';
                         }
-                        echo '<a href="home.php">Omat tiedot</a></li>';
+                        echo '<a href="home.php">Omat kilometrit</a></li>';
                         
                         if ($page == "team") {
                             echo '<li class="active">';
                         } else {
                             echo '<li>';
                         }
-                        echo '<a href="team.php">Joukkueen tiedot</a></li>';
+                        echo '<a href="team.php">Oma joukkue</a></li>';
                                                 
                         if ($page == "messages") {
                             echo '<li class="active">';

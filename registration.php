@@ -66,25 +66,25 @@
                     <fieldset>
                         <div class="control-group control-group-user">
                             <div class="controls">
-                            <input name="user" class="input-xlarge" type="email" placeholder="Sähköpostiosoite" tabindex="1" autofocus required></input>
-                            <span id="user_error" class="help-inline">Tili on jo olemassa.</span>
+                                <input name="user" class="input-xlarge" autocomplete="off" type="email" placeholder="Sähköpostiosoite" tabindex="1" autofocus required></input>
+                                <span id="user_error" class="help-inline">Tili on jo olemassa.</span>
                             </div>
                         </div>
                         <div class="control-group control-group-nick">
                             <div class="controls">
-                            <input name="nick" class="input-xlarge" type="text" placeholder="Nimimerkki" tabindex="2" required></input>
-                            <span id="nick_error" class="help-inline">Varattu. Vaihda.</span>
+                                <input name="nick" class="input-xlarge" autocomplete="off" type="text" placeholder="Nimimerkki" tabindex="2" required></input>
+                                <span id="nick_error" class="help-inline">Varattu. Vaihda.</span>
                             </div>
                         </div>
                         <div class="control-group control-group-pass">
                             <div class="controls">
-                            <input name="pass" class="input-xlarge" type="password" placeholder="Luo salasana" tabindex="2" required></input>
-                            <span id="pass_error" class="help-inline">Tarkista salasana</span>
+                                <input name="pass" class="input-xlarge" autocomplete="off" type="password" placeholder="Luo salasana" tabindex="2" required></input>
+                                <span id="pass_error" class="help-inline">Tarkista salasana</span>
                             </div>
                         </div>
                         <div class="control-group control-group-pass">
                             <div class="controls">
-                            <input name="pass2" class="input-xlarge" type="password" placeholder="Vahvista salasana" tabindex="2" required></input>
+                                <input name="pass2" class="input-xlarge" autocomplete="off" type="password" placeholder="Vahvista salasana" tabindex="2" required></input>
                             </div>
                         </div>
                         <div class="control-group">

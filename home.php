@@ -8,7 +8,9 @@
 </head>
 
 <script type="text/javascript">
-
+    var map = 0;
+    var marker = 0;
+    
     $(document).ready( function () {
         $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy", altFormat: "yy-mm-dd", altField: "#alt_date" } );
         $('#dateinput').datepicker( 'setDate', new Date() );
@@ -51,6 +53,7 @@
             $.post("trip_post.php", params, function(status) {
                 if (status=="ok") {
                     updateTripTable();
+                    updateStatusDisplay();
                 }
             });
             
@@ -66,20 +69,19 @@
         
         updateTripTable();
         
-        showCurrentLocation();
+        updateStatusDisplay();        
     });
     
     function initializeMap() {
-        return;
         // create map
         var mapOptions = {
             center: new google.maps.LatLng(65.017, 25.467),
-            zoom: 15,
+            zoom: 7,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             disableDefaultUI: true
 	};
 	
-	var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+	map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
     }
     
     function resizeContent() {
@@ -91,9 +93,38 @@
         var mapHeight = contentHeight - $('#map_controls_container').height();
         $('#mapContainer').height(mapHeight);
     }
-
-    function showCurrentLocation() {
+    
+    function showCurrentLocation(loc) {
+        map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));        
         
+        if (!marker) {
+            console.log("create marker!");
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(loc.lat, loc.lng),
+                map: map,
+                title:"Your current location!",
+                icon: "images/cyclist.png"
+            });
+        } else {
+            marker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));
+        }
+        
+    }
+    
+    function updateStatusDisplay() {
+        $.get("trip_get.php", "op=getTotalDistance", function(distance) {
+            $("#total_sum").text(distance.replace(".",","));
+        });
+        
+        $.get("location_get.php", "", function(location) {
+            console.log("Location: " +JSON.stringify(location));
+            var l = JSON.parse(location);
+            $("#latitude").text(l.lat);
+            $("#longitude").text(l.lng);
+            $("#heading").text(l.heading);
+            
+            showCurrentLocation(l);
+        });
     }
     
 </script>
@@ -143,15 +174,16 @@
             <div id="mapPanel">
                 <div id="map_controls_container">
                     <div id="map_controls">
-                        <div id="total_km" class="map_control_label">Yhteensä: 652,15 km</div>
-                        <div id="coordinates" class="map_control_label">Nizza: 2300,34 km</div>
-                        <div id="arrival" class="map_control_label">Saapuminen: 25.8.2013</div>
+                        <div class="map_control_label">Yhteensä: <strong id="total_sum"></strong> km</div>
+                        <div class="map_control_label">Lat: <strong id="latitude"></strong></div>
+                        <div class="map_control_label">Lng: <strong id="longitude"></strong></div>
+                        <div class="map_control_label">Heading: <strong id="heading"></strong></div>                        
                     </div>
                     
                     <div id="street_view_controls" style="display:none">
                         <div id="leg" class="map_control_label">Osuus: #1</div>
-                        <div id="leg" class="map_control_label">Pvm: 5.1.2013</div>
-                        <div id="leg" class="map_control_label">Osamatka: 62,50 km</div>
+                        <div id="leg1" class="map_control_label">Pvm: 5.1.2013</div>
+                        <div id="leg2" class="map_control_label">Osamatka: 62,50 km</div>
                         <button id="streetPlayButton" class="btn btn-info map-button">Play</button>
                     </div>
                     
