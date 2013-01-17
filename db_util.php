@@ -166,7 +166,7 @@ class DbUtil {
         }
     }
     
-    function get_current_location($user) {
+    public static function get_current_location($user) {
         $query = self::db()->prepare("SELECT step.lat, step.lng, step.heading FROM location INNER JOIN step ON location.step=step.id WHERE user=?");
         $query->bindParam(1,$user);
         $query->execute();

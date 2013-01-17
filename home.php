@@ -103,7 +103,7 @@
                 position: new google.maps.LatLng(loc.lat, loc.lng),
                 map: map,
                 title:"Your current location!",
-                icon: "images/cyclist.png"
+                icon: "images/cyclist_marker.png"
             });
         } else {
             marker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));
@@ -193,7 +193,7 @@
                 <div id="mapContainer">
                     <div id="map_canvas"></div>
                     <div id="street_view" style="display:none">
-                        <img id="street_view_image" src="http://maps.googleapis.com/maps/api/streetview?size=640x480&location=65.012642,25.471491&heading=123&sensor=false"/>
+                        <img id="street_view_image" <!-- src="http://maps.googleapis.com/maps/api/streetview?size=640x480&location=65.012642,25.471491&heading=123&sensor=false"-->/>
                         <div id="streetSign">
                             <div class="streetSignText">Tukholma 350 km</div>
                             <div class="streetSignText">Nizza 2560 km</div>
