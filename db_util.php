@@ -173,6 +173,22 @@ class DbUtil {
         return $query->fetch(PDO::FETCH_ASSOC);
     }
     
+    public static function get_route_id(/* name */) {
+        $query = self::db()->prepare("SELECT id FROM route LIMIT 1");
+        $query->execute();
+        $row = $query->fetch();
+        return $row["id"] ? $row["id"] : 0;
+    }
+    
+    public static function get_route_waypoints($route) {
+        $query = self::db()->prepare(
+            "SELECT lat,lng,distance FROM step WHERE id IN
+                ((SELECT id FROM step ORDER BY distance LIMIT 1),
+                 (SELECT id FROM step ORDER BY distance DESC LIMIT 1)) ORDER BY distance");
+        $query->bindParam(1,$route);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
     
 } // class
 

@@ -9,7 +9,9 @@
 
 <script type="text/javascript">
     var map = 0;
-    var marker = 0;
+    var routeRenderer = 0;
+    var locationMarker = 0;
+    var directionsService = 0;
     
     $(document).ready( function () {
         $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy", altFormat: "yy-mm-dd", altField: "#alt_date" } );
@@ -82,6 +84,10 @@
 	};
 	
 	map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+        
+        directionsService = new google.maps.DirectionsService();
+        
+        showRouteOnMap();
     }
     
     function resizeContent() {
@@ -97,16 +103,16 @@
     function showCurrentLocation(loc) {
         map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));        
         
-        if (!marker) {
+        if (!locationMarker) {
             console.log("create marker!");
-            marker = new google.maps.Marker({
+            locationMarker = new google.maps.Marker({
                 position: new google.maps.LatLng(loc.lat, loc.lng),
                 map: map,
                 title:"Your current location!",
                 icon: "images/cyclist_marker.png"
             });
         } else {
-            marker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));
+            locationMarker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));
         }
         
     }
@@ -124,6 +130,57 @@
             $("#heading").text(l.heading);
             
             showCurrentLocation(l);
+        });
+    }
+    
+    function showRouteOnMap() {
+        if (!routeRenderer) {
+            options = {
+                polylineOptions: { strokeColor : "black", strokeOpacity: 0.5 },
+                suppressMarkers: true
+            };
+            
+            routeRenderer = new google.maps.DirectionsRenderer(options);
+            routeRenderer.setMap(map);
+        }
+        
+        
+        $.get("route_get.php", "", function(data) {
+            var waypoints = JSON.parse(data);
+            var orig = waypoints[0];
+            var dest = waypoints[waypoints.length-1];
+            
+            console.log("Waypoints: " + JSON.stringify(waypoints));
+            var request = {
+                origin: new google.maps.LatLng(65.012642,25.471491),
+                destination: new google.maps.LatLng(65.736313,24.56432),
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            
+            console.log("Route req: " + JSON.stringify(request));
+
+            directionsService.route(request, function(result,status){
+                if (status === google.maps.DirectionsStatus.OK) {
+                    routeRenderer.setDirections(result);
+                } else {
+                    console.log("showRouteOnMap failed: " +status);
+                }
+            });
+            
+            // create start and finish markers
+            new google.maps.Marker({
+                position: new google.maps.LatLng(orig.lat, orig.lng),
+                map: map,
+                title:"LÄHTÖ",
+                icon: "images/start_marker.png"
+            });
+            
+            new google.maps.Marker({
+                position: new google.maps.LatLng(dest.lat, dest.lng),
+                map: map,
+                title:"MAALI",
+                icon: { url: "images/finish_marker.png", anchor: {x:0,y:60} }
+            });
         });
     }
     
