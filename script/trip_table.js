@@ -22,7 +22,7 @@ function updateTripTable() {
 
 function getTripData(callback) {
     console.log("getTripData from server");
-    $.get("trip_get.php", "", function(data) {
+    $.get("trip_get.php", "op=getTrips", function(data) {
         trips = JSON.parse(data);  
         callback();
     });
@@ -43,9 +43,9 @@ function showTripPage(page) {
         var date = new Date(trip.date);
         var dateString = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
 
-        var row = "<tr><td>" + (tripCount - i) + "</td><td>" + dateString + "</td><td>" + trip.distance.replace(".",",") + "</td></tr>";
+        var row = "<tr date='" + trip.date + "'><td>" + (tripCount - i) + "</td><td>" + dateString + "</td><td>" + trip.distance.replace(".",",") + "</td></tr>";
         $("#tripRows").append(row);
-    }    
+    }
 }
 
 function updatePageSelector(currentPage) {

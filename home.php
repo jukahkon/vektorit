@@ -71,10 +71,22 @@
         
         updateTripTable();
         
-        updateStatusDisplay();        
+        updateStatusDisplay();
+
     });
     
+    $(document).on("click","#tripRows tr",{}, function() {
+        var param = "op=getTripWaypoints&";
+        param += "date=" + $(this).attr("date");
+        
+        $.get("trip_get.php", "op=getTripWaypoints", function(data) {
+            console.log("Map trip: " +data);
+        });
+    });
+
     function initializeMap() {
+        // return;
+        
         // create map
         var mapOptions = {
             center: new google.maps.LatLng(65.017, 25.467),
@@ -101,6 +113,9 @@
     }
     
     function showCurrentLocation(loc) {
+        if (!map)
+            return;
+        
         map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));        
         
         if (!locationMarker) {
