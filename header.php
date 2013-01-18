@@ -36,7 +36,18 @@ function createHeader($page) {
                         } else {
                             echo '<li>';
                         }                        
-                        echo '<a href="messages.php">Viestit</a></li>';
+                        echo '<a href="messages.php">Vektorit Caf&#233;</a></li>';
+                        
+                        echo '<li class="dropdown">';
+                            echo '<a class="dropdown-toggle" id="drop4" role="button" data-toggle="dropdown" href="#">Dropdown <b class="caret"></b></a>';
+                            echo '<ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">';
+                              echo '<li><a tabindex="-1" href="#">Action</a></li>';
+                              echo '<li><a tabindex="-1" href="#">Another action</a></li>';
+                              echo '<li><a tabindex="-1" href="#">Something else here</a></li>';
+                              echo '<li class="divider"></li>';
+                              echo '<li><a tabindex="-1" href="#">Separated link</a></li>';
+                            echo '</ul>';
+                        echo '</li>';
                         
                     echo '</ul>';
                                         

@@ -287,7 +287,16 @@
                         <button id="streetPlayButton" class="btn btn-info map-button">Play</button>
                     </div>
                     
-                    <button id="mapModeButton" class="btn btn-warning map-button">Katutaso</button>                    
+                    <div id="mapOptions" class="dropdown">
+                        <a id="foo" class="map_control_label" data-toggle="dropdown" href="#">Valinnat<b class="caret"></b></a>
+                        <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
+                            <li><a tabindex="-1" href="#">Näytä reitti</a></li>
+                            <li><a tabindex="-1" href="#">Katso kuvat</a></li>
+                            <li class="divider"></li>
+                            <li><a tabindex="-1" href="#">...</a></li>
+                        </ul>
+                    </div>
+                    
                 </div>
                 
                 <div id="mapContainer">

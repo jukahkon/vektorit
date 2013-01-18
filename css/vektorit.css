@@ -7,6 +7,23 @@
     padding-right: 5px;
 }
 
+#mapOptions .dropdown-menu {
+    float: right;
+    right: 0;
+    left: auto;
+}
+
+#mapOptions .caret {
+    margin-top: 16px;
+    margin-left: 4px;
+    border-top: 4px solid greenyellow;
+}
+
+#mapOptions > a:hover {
+    color: greenyellow;
+    text-decoration: none;
+}
+
 .pagination {
     margin: 0;
 }
@@ -21,6 +38,7 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    background-image: url("../images/gray_jean.png");
 }
 
 #container {
@@ -113,8 +131,8 @@ body {
     padding: 2px 6px;
 }
 
-#mapModeButton {
-    margin-right: 5px;
+#mapOptions {
+    margin-right: 8px;
     float: right;
 }
 
@@ -169,6 +187,10 @@ mapContainer {
     margin-left: 70px;
     width: 40px;
     height: 30px;
+}
+
+.table {
+    background-color: whitesmoke;
 }
 
 td.selected {
