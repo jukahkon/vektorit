@@ -171,6 +171,17 @@ mapContainer {
     height: 30px;
 }
 
+td.selected {
+    font-weight: bold;
+}
+
+td.selected:last-child {
+    background-image: url("../images/trip_selected.png");
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+
+
 
 
 

@@ -137,6 +137,29 @@ class DbUtil {
         } 
     }
     
+    public static function get_total_distance_by_date($user, $date) {
+        $query = self::db()->prepare("SELECT SUM(distance) AS total FROM trip WHERE user=? AND date <= ?");
+        $query->bindParam(1,$user);
+        $query->bindParam(2,$date);
+        $query->execute();
+        
+        if ($query->rowCount()==1) {
+            $row = $query->fetch();
+            return $row["total"] ? $row["total"] : 0;
+        } else {
+            return 0;
+        } 
+    }
+    
+    public static function get_trip_distance_by_date($user, $date) {
+        $query = self::db()->prepare("SELECT distance FROM trip WHERE user=? AND date=?");
+        $query->bindParam(1,$user);
+        $query->bindParam(2,$date);
+        $query->execute();
+        $row = $query->fetch();
+        return $row["distance"] ? $row["distance"] : 0;
+    }
+    
     public static function find_step_for_distance($distance) {
         $query = self::db()->prepare("SELECT id FROM step WHERE distance >= ? LIMIT 1");
         $query->bindParam(1,$distance);
@@ -186,6 +209,16 @@ class DbUtil {
                 ((SELECT id FROM step ORDER BY distance LIMIT 1),
                  (SELECT id FROM step ORDER BY distance DESC LIMIT 1)) ORDER BY distance");
         $query->bindParam(1,$route);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public static function get_trip_steps($route,$fromDistance,$toDistance) {
+        $query = self::db()->prepare("SELECT lat,lng,distance FROM step 
+                                      WHERE route=? AND distance BETWEEN ? AND ?");
+        $query->bindParam(1,$route);
+        $query->bindParam(2,$fromDistance);
+        $query->bindParam(3,$toDistance);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }

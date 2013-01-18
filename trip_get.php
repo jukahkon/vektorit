@@ -10,13 +10,15 @@ if (isset($_GET["op"])) {
         echo DbUtil::get_total_distance($user_id);
     } else if ($_GET["op"]=="getTrips") {
         echo json_encode(DbUtil::get_trips($user_id));
-    } else if ($_GET["op"]=="getTripWaypoints") {
-        $date = $_GET["op"];
-        echo "TBD";
+    } else if ($_GET["op"]=="getTripSteps") {
+        $date = $_GET["date"];
+        $tripDistance = DbUtil::get_trip_distance_by_date($user_id, $date);
+        $totalByDate = DbUtil::get_total_distance_by_date($user_id, $date);
+        $from = $totalByDate - $tripDistance;        
+        echo json_encode(DbUtil::get_trip_steps(DbUtil::get_route_id(),$from,$totalByDate));
     } else {
         echo "unknown operation";
-    }
-       
+    }       
 }
 
 ?>

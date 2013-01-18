@@ -8,10 +8,11 @@
 </head>
 
 <script type="text/javascript">
-    var map = 0;
-    var routeRenderer = 0;
-    var locationMarker = 0;
-    var directionsService = 0;
+    var map = null;
+    var routeRenderer = null;
+    var locationMarker = null;
+    var directionsService = null;
+    var tripPath = null;
     
     $(document).ready( function () {
         $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy", altFormat: "yy-mm-dd", altField: "#alt_date" } );
@@ -76,21 +77,48 @@
     });
     
     $(document).on("click","#tripRows tr",{}, function() {
-        var param = "op=getTripWaypoints&";
-        param += "date=" + $(this).attr("date");
+        if (tripPath) {
+            tripPath.setMap(null);
+            tripPath = null;
+        }            
         
-        $.get("trip_get.php", "op=getTripWaypoints", function(data) {
-            console.log("Map trip: " +data);
-        });
+        var highlight = $(this).find("td");
+        
+        if (highlight.hasClass("selected")) {
+            highlight.removeClass("selected");
+        } else {
+            $("#tripRows").find("td").removeClass("selected");
+            highlight.addClass("selected");
+            
+            var param = "op=getTripSteps&";
+            param += "date=" + $(this).attr("date");
+            
+            $.get("trip_get.php", param, function(data) {
+                var steps = JSON.parse(data);
+
+                var coords = [];
+                for (var i=0; i < steps.length; i++) {
+                    var step = steps[i];
+                    console.log("Step: " + JSON.stringify(step));
+                    coords.push(new google.maps.LatLng(step.lat, step.lng));
+                }
+
+                tripPath = new google.maps.Polyline({
+                    path: new google.maps.MVCArray(coords),
+                    strokeWeight: 4.0,
+                    strokeColor: "red"                
+                });
+
+                tripPath.setMap(map);
+            });
+        }
     });
 
     function initializeMap() {
-        // return;
+        // return;        
         
         // create map
         var mapOptions = {
-            center: new google.maps.LatLng(65.017, 25.467),
-            zoom: 7,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             disableDefaultUI: true
 	};
@@ -116,7 +144,7 @@
         if (!map)
             return;
         
-        map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));        
+        // map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));        
         
         if (!locationMarker) {
             console.log("create marker!");
@@ -265,7 +293,8 @@
                 <div id="mapContainer">
                     <div id="map_canvas"></div>
                     <div id="street_view" style="display:none">
-                        <img id="street_view_image" <!-- src="http://maps.googleapis.com/maps/api/streetview?size=640x480&location=65.012642,25.471491&heading=123&sensor=false"-->/>
+                        <!-- src="http://maps.googleapis.com/maps/api/streetview?size=640x480&location=65.012642,25.471491&heading=123&sensor=false"-->
+                        <img id="street_view_image" />
                         <div id="streetSign">
                             <div class="streetSignText">Tukholma 350 km</div>
                             <div class="streetSignText">Nizza 2560 km</div>
