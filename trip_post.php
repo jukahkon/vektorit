@@ -29,6 +29,14 @@ function updateLocation($user) {
     if ($step) {
         DbUtil::update_location($user, $step);
     } else {
+        $routeLength = DbUtil::get_route_length();        
+        
+        if ($totalDistance > $routeLength) {
+            // set location to last step
+            $finalStep = DbUtil::find_step_for_distance($routeLength);
+            DbUtil::update_location($user, $finalStep);
+        }
+        
         error_log("Location update failed!");
     }    
 }

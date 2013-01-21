@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php require("head.php") ?>
-<?php /*require("session_handler.php")*/ ?>
+<?php require("session_handler.php") ?>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
 
@@ -34,8 +34,7 @@
         var contentHeight = $('#container').height() - $('#header').outerHeight(true) - $('#footer').outerHeight(true);
         $('#content').height(contentHeight);
         console.log("Content height: " +contentHeight);
-        var mapHeight = contentHeight - $('#map_controls_container').height();
-        $('#mapContainer').height(mapHeight);
+        $('#mapContainer').height(contentHeight);
     }    
     
 </script>
@@ -50,6 +49,7 @@
         <div id="content">
             <div id="dataPanel">
                 <div id="dataTable">
+                    <h3>Team Simpsons</h3>
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
@@ -67,8 +67,6 @@
                             <tr><td>8</td><td>Nn</td><td>0 km</td></tr>
                             <tr><td>9</td><td>Nn</td><td>0 km</td></tr>
                             <tr><td>10</td><td>Nn</td><td>0 km</td></tr>
-                            <tr><td>11</td><td>Nn</td><td>0 km</td></tr>
-                            <tr><td>12</td><td>Nn</td><td>0 km</td></tr>
                         </tbody>
                     </table>
                     <div id="pageSelector" class="pagination">
@@ -86,12 +84,6 @@
             </div>
             
             <div id="mapPanel">
-                <div id="map_controls_container">
-                    <div id="map_controls">
-                        <div id="total_km" class="map_control_label">Team Simpsons: 10800 km</div>
-                    </div>                    
-                </div>
-                
                 <div id="mapContainer">
                     <div id="map_canvas"></div>
                 </div>                                                 

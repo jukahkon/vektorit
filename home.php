@@ -3,6 +3,7 @@
 <?php require("session_handler.php") ?>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
+<script src="assets/imagesloaded/jquery.imagesloaded.min.js"></script>
 <script src="script/trip_table.js"></script>
 
 </head>
@@ -13,55 +14,16 @@
     var locationMarker = null;
     var directionsService = null;
     var tripPath = null;
+    var currentLocation = null;
     
     $(document).ready( function () {
-        $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy", altFormat: "yy-mm-dd", altField: "#alt_date" } );
+        $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy",
+                                      altFormat: "yy-mm-dd", altField: "#alt_date" } );
         $('#dateinput').datepicker( 'setDate', new Date() );
         
-        resizeContent();
         initializeMap();
         
-        $("#mapModeButton").click( function() {
-            console.log("Change map mode");
-            if ($('#street_view').is(':visible')) {
-                $('#street_view').hide();
-                $('#street_view_controls').hide();
-                $('#map_canvas').show();
-                $('#map_controls').show();
-                $("#mapModeButton").text('Katutaso');
-            } else {
-                $('#map_canvas').hide();
-                $('#map_controls').hide();
-                $('#street_view').show();
-                $('#street_view_controls').show();
-                $("#mapModeButton").text('Kartta');
-            }
-        });
-        
-        $("#tripInputForm").submit( function() {
-            var value = $('#distanceInput').val().replace(",",".");
-            if (!value) {
-                value = "0";
-            }
-            var distance = parseFloat(value);
-            if (isNaN(distance)) {
-                return false;
-            }
-            
-            var distance = distance.toFixed(2);            
-            var params = "date=" + $('#alt_date').val();
-            params += "&distance=" + distance.toString();            
-            console.log("Handle trip submit: " + params);
-            
-            $.post("trip_post.php", params, function(status) {
-                if (status=="ok") {
-                    updateTripTable();
-                    updateStatusDisplay();
-                }
-            });
-            
-            return false;
-        });
+        $("#tripInputForm").submit(handleTripSubmit);
         
         $('#distanceInput').keypress(function(event) {
             if (event.which != 44 && (event.which < 48 || event.which > 57))
@@ -69,6 +31,37 @@
                 event.preventDefault();
             }            
         });        
+
+        $('#menuItemMapMode').click(event, function() {
+            console.log("Change map mode");
+            if ($('#street_view').is(':visible')) {
+                $('#street_view').fadeOut(500);
+                $('#street_view_controls').hide();
+                $('#map_canvas').fadeIn(500);
+                $('#map_controls').show();
+                $("#menuItemMapMode").text('Katutaso');
+            } else {
+                $('#map_canvas').fadeOut(500);
+                $('#map_controls').hide();
+                $('#street_view').fadeIn(500);
+                $('#street_view_controls').show();
+                $("#menuItemMapMode").text('Kartta');
+                updateStreetViewImage(currentLocation);
+            }
+
+            event.preventDefault();            
+        });
+
+        $('#menuItemShowRoute').click(event, function() {
+            console.log("Show route!");
+            showRouteOnMap();
+            event.preventDefault();            
+        });
+        
+        $('#menuItemOwnLocation').click(event, function() {
+            console.log("Show own location!");
+            event.preventDefault();            
+        });
         
         updateTripTable();
         
@@ -106,7 +99,7 @@
                 tripPath = new google.maps.Polyline({
                     path: new google.maps.MVCArray(coords),
                     strokeWeight: 4.0,
-                    strokeColor: "red"                
+                    strokeColor: "red" // "#269DFF"
                 });
 
                 tripPath.setMap(map);
@@ -115,7 +108,7 @@
     });
 
     function initializeMap() {
-        // return;        
+        // return;
         
         // create map
         var mapOptions = {
@@ -123,28 +116,15 @@
             disableDefaultUI: true
 	};
 	
-	map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-        
-        directionsService = new google.maps.DirectionsService();
-        
-        showRouteOnMap();
-    }
-    
-    function resizeContent() {
-        console.log("Container height: " +$('#container').height());
-        console.log("Header height: " +$('#header').outerHeight(true));
-        console.log("Footer height: " +$('#footer').outerHeight(true));
-        var contentHeight = $('#container').height() - $('#header').outerHeight(true) - $('#footer').outerHeight(true);
-        $('#content').height(contentHeight);
-        var mapHeight = contentHeight - $('#map_controls_container').height();
-        $('#mapContainer').height(mapHeight);
+	map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);        
     }
     
     function showCurrentLocation(loc) {
         if (!map)
             return;
         
-        // map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));        
+        map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
+        map.setZoom(8);
         
         if (!locationMarker) {
             console.log("create marker!");
@@ -156,30 +136,40 @@
             });
         } else {
             locationMarker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));
-        }
-        
+        }        
     }
     
     function updateStatusDisplay() {
-        $.get("trip_get.php", "op=getTotalDistance", function(distance) {
-            $("#total_sum").text(distance.replace(".",","));
+        $.get("trip_get.php", "op=getTotalDistance", function(data) {
+            var distanceData = JSON.parse(data);            
+            $("#total_sum").text(distanceData.totalDistance.replace(".",","));
+            var distanceLeft = distanceData.routeLength - distanceData.totalDistance;
+            distanceLeft = distanceLeft.toFixed(2);
+            if (distanceLeft < 0) {
+                distanceLeft = 0.00;
+            }
+            
+            $("#distance_left").text(distanceLeft.toString().replace(".",","));
         });
         
         $.get("location_get.php", "", function(location) {
             console.log("Location: " +JSON.stringify(location));
-            var l = JSON.parse(location);
-            $("#latitude").text(l.lat);
-            $("#longitude").text(l.lng);
-            $("#heading").text(l.heading);
+            currentLocation = JSON.parse(location);
+            /*$("#latitude").text(currentLocation.lat);
+            $("#longitude").text(currentLocation.lng);
+            $("#heading").text(currentLocation.heading);*/
             
-            showCurrentLocation(l);
+            showCurrentLocation(currentLocation);
         });
     }
     
     function showRouteOnMap() {
+        if (!directionsService) {
+            directionsService= new google.maps.DirectionsService();
+        }
+
         if (!routeRenderer) {
             options = {
-                polylineOptions: { strokeColor : "black", strokeOpacity: 0.5 },
                 suppressMarkers: true
             };
             
@@ -215,7 +205,7 @@
                 position: new google.maps.LatLng(orig.lat, orig.lng),
                 map: map,
                 title:"LÄHTÖ",
-                icon: "images/start_marker.png"
+                icon: { url: "images/start_marker.png", anchor: {x:3,y:60} }
             });
             
             new google.maps.Marker({
@@ -227,11 +217,22 @@
         });
     }
     
+    function updateStreetViewImage(location) {
+        $(".street_view_image").remove();
+        
+        var image = '<img class="street_view_image" src="http://maps.googleapis.com/maps/api/streetview?size=640x480&location='
+                     + location.lat + "," + location.lng
+                     + '&heading=' +location.heading + '&sensor=false">';
+
+        $("#streetSign").before(image);				
+        // $("#imageArea > img:nth-child(n-1)").imagesLoaded(showImage);    
+    }
+    
 </script>
 
 </head>
 
-<body onresize="resizeContent()">
+<body>
     <div id="container">
         
         <?php require("header.php"); createHeader("home"); ?>
@@ -275,25 +276,27 @@
                 <div id="map_controls_container">
                     <div id="map_controls">
                         <div class="map_control_label">Yhteensä: <strong id="total_sum"></strong> km</div>
-                        <div class="map_control_label">Lat: <strong id="latitude"></strong></div>
-                        <div class="map_control_label">Lng: <strong id="longitude"></strong></div>
-                        <div class="map_control_label">Heading: <strong id="heading"></strong></div>                        
+                        <div class="map_control_label">Jäljellä: <strong id="distance_left"></strong> km</div>
+                        <!--
+                            <div class="map_control_label">Lat: <strong id="latitude"></strong></div>
+                            <div class="map_control_label">Lng: <strong id="longitude"></strong></div>
+                            <div class="map_control_label">Heading: <strong id="heading"></strong></div>
+                        -->
                     </div>
                     
                     <div id="street_view_controls" style="display:none">
                         <div id="leg" class="map_control_label">Osuus: #1</div>
                         <div id="leg1" class="map_control_label">Pvm: 5.1.2013</div>
                         <div id="leg2" class="map_control_label">Osamatka: 62,50 km</div>
-                        <button id="streetPlayButton" class="btn btn-info map-button">Play</button>
                     </div>
                     
                     <div id="mapOptions" class="dropdown">
                         <a id="foo" class="map_control_label" data-toggle="dropdown" href="#">Valinnat<b class="caret"></b></a>
                         <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
-                            <li><a tabindex="-1" href="#">Näytä reitti</a></li>
-                            <li><a tabindex="-1" href="#">Katso kuvat</a></li>
+                            <li><a id="menuItemMapMode" href="#">Katunäkymä</a></li>
+                            <li><a id="menuItemShowRoute" href="#">Näytä reitti</a></li>
                             <li class="divider"></li>
-                            <li><a tabindex="-1" href="#">...</a></li>
+                            <li><a id="menuItemOwnLocation" href="#">Oma sijainti</a></li>
                         </ul>
                     </div>
                     
@@ -302,12 +305,13 @@
                 <div id="mapContainer">
                     <div id="map_canvas"></div>
                     <div id="street_view" style="display:none">
-                        <!-- src="http://maps.googleapis.com/maps/api/streetview?size=640x480&location=65.012642,25.471491&heading=123&sensor=false"-->
-                        <img id="street_view_image" />
                         <div id="streetSign">
                             <div class="streetSignText">Tukholma 350 km</div>
                             <div class="streetSignText">Nizza 2560 km</div>
                             <img class="streetSignIcon" src="images/arrow_down.png"></img>
+                        </div>
+                        <div id="playbackButton">
+                            <img class="playbackIcon" src="images/playback.png"></img>
                         </div>                        
                     </div>
                 </div>                                                 

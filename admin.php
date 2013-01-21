@@ -94,6 +94,7 @@ function createSession($user) {
     
     session_regenerate_id(true);
     $_SESSION['user_id'] = $user_id;
+    $_SESSION['nick'] = DbUtil::nickname($user_id);
     session_write_close();
 }
 

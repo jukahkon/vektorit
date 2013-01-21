@@ -7,7 +7,12 @@ $user_id = $_SESSION['user_id'];
 
 if (isset($_GET["op"])) {
     if ($_GET["op"]=="getTotalDistance") {
-        echo DbUtil::get_total_distance($user_id);
+        $result = array(
+            "totalDistance" => DbUtil::get_total_distance($user_id),
+            "routeLength" => DbUtil::get_route_length()
+        );
+        
+        echo json_encode($result);
     } else if ($_GET["op"]=="getTrips") {
         echo json_encode(DbUtil::get_trips($user_id));
     } else if ($_GET["op"]=="getTripSteps") {

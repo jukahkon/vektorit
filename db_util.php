@@ -63,6 +63,14 @@ class DbUtil {
         }    
     }
     
+    public static function nickname($user) {
+        $query = self::db()->prepare("SELECT nickname FROM user WHERE id=?");
+        $query->bindParam(1,$user);
+        $query->execute();
+        $row = $query->fetch();
+        return $row["nickname"];
+    }
+    
     public static function user_autenthicate($email,$pass) {
         $query = self::db()->prepare("SELECT password,salt FROM user WHERE email=?");
         $query->bindParam(1,$email);
@@ -201,6 +209,13 @@ class DbUtil {
         $query->execute();
         $row = $query->fetch();
         return $row["id"] ? $row["id"] : 0;
+    }
+    
+    public static function get_route_length(/* name */) {
+        $query = self::db()->prepare("SELECT length FROM route LIMIT 1");
+        $query->execute();
+        $row = $query->fetch();
+        return $row["length"];
     }
     
     public static function get_route_waypoints($route) {
