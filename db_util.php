@@ -229,7 +229,7 @@ class DbUtil {
     }
     
     public static function get_trip_steps($route,$fromDistance,$toDistance) {
-        $query = self::db()->prepare("SELECT lat,lng,distance FROM step 
+        $query = self::db()->prepare("SELECT lat,lng,heading,distance FROM step 
                                       WHERE route=? AND distance BETWEEN ? AND ?");
         $query->bindParam(1,$route);
         $query->bindParam(2,$fromDistance);

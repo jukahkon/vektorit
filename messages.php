@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php require("head.php") ?>
-<?php /*require("session_handler.php")*/ ?>
+<?php require("session_handler.php") ?>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
 

@@ -40,8 +40,7 @@ function showTripPage(page) {
     
     for (var i=firstTrip; i < lastTrip; i++) {
         var trip = trips[i];
-        var date = new Date(trip.date);
-        var dateString = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+        var dateString = formatDate(trip.date);
 
         var row = "<tr date='" + trip.date + "'><td>" + (tripCount - i) + "</td><td>" + dateString + "</td><td>" + trip.distance.replace(".",",") + "</td></tr>";
         $("#tripRows").append(row);

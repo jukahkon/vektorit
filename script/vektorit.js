@@ -8,6 +8,12 @@ function logout () {
     form.submit();
 }
 
+function formatDate(date) {
+    var date = new Date(date);
+    var dateString = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+    return dateString;
+}
+
 function handleTripSubmit() {
     var value = $('#distanceInput').val().replace(",",".");
     if (!value) {

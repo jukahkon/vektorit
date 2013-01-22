@@ -5,6 +5,7 @@
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
 <script src="assets/imagesloaded/jquery.imagesloaded.min.js"></script>
 <script src="script/trip_table.js"></script>
+<script src="script/street_view.js"></script>
 
 </head>
 
@@ -46,7 +47,7 @@
                 $('#street_view').fadeIn(500);
                 $('#street_view_controls').show();
                 $("#menuItemMapMode").text('Kartta');
-                updateStreetViewImage(currentLocation);
+                prepareStreetView();
             }
 
             event.preventDefault();            
@@ -59,7 +60,7 @@
         });
         
         $('#menuItemOwnLocation').click(event, function() {
-            console.log("Show own location!");
+            console.log("Show own location!");            
             event.preventDefault();            
         });
         
@@ -82,28 +83,32 @@
         } else {
             $("#tripRows").find("td").removeClass("selected");
             highlight.addClass("selected");
-            
-            var param = "op=getTripSteps&";
-            param += "date=" + $(this).attr("date");
-            
-            $.get("trip_get.php", param, function(data) {
-                var steps = JSON.parse(data);
 
-                var coords = [];
-                for (var i=0; i < steps.length; i++) {
-                    var step = steps[i];
-                    console.log("Step: " + JSON.stringify(step));
-                    coords.push(new google.maps.LatLng(step.lat, step.lng));
-                }
+            if ($('#street_view').is(':visible')) {
+                prepareStreetView();
+            } else {
+                var param = "op=getTripSteps&";
+                param += "date=" + $(this).attr("date");
 
-                tripPath = new google.maps.Polyline({
-                    path: new google.maps.MVCArray(coords),
-                    strokeWeight: 4.0,
-                    strokeColor: "red" // "#269DFF"
-                });
+                $.get("trip_get.php", param, function(data) {
+                    var steps = JSON.parse(data);
 
-                tripPath.setMap(map);
-            });
+                    var coords = [];
+                    for (var i=0; i < steps.length; i++) {
+                        var step = steps[i];
+                        console.log("Step: " + JSON.stringify(step));
+                        coords.push(new google.maps.LatLng(step.lat, step.lng));
+                    }
+
+                    tripPath = new google.maps.Polyline({
+                        path: new google.maps.MVCArray(coords),
+                        strokeWeight: 4.0,
+                        strokeColor: "red" // "#269DFF"
+                    });
+
+                    tripPath.setMap(map);
+                });                
+            }
         }
     });
 
@@ -217,15 +222,19 @@
         });
     }
     
-    function updateStreetViewImage(location) {
-        $(".street_view_image").remove();
-        
-        var image = '<img class="street_view_image" src="http://maps.googleapis.com/maps/api/streetview?size=640x480&location='
-                     + location.lat + "," + location.lng
-                     + '&heading=' +location.heading + '&sensor=false">';
+    function prepareStreetView() {
+        // find selected trip
+        var tripDate = $("#tripRows td.selected").parent().attr("date");
+        if (!tripDate) {
+            $("#tripRows > tr:first-child > td").addClass("selected");
+            tripDate = $("#tripRows > tr:first-child").attr("date");
+        }
 
-        $("#streetSign").before(image);				
-        // $("#imageArea > img:nth-child(n-1)").imagesLoaded(showImage);    
+        console.log("prepareStreetView: " +tripDate);
+        
+        if (tripDate) {
+            showSreetViewImages(tripDate);
+        }        
     }
     
 </script>
@@ -236,8 +245,9 @@
     <div id="container">
         
         <?php require("header.php"); createHeader("home"); ?>
-
+        
         <div id="content">
+           
             <div id="dataPanel">
                 <div id="dataInput">
                     <form id="tripInputForm" class="well">
@@ -261,7 +271,7 @@
                                 <th>#</th><th>Päivämäärä</th><th>Kilometrit</th>
                             </tr>
                         </thead>
-                        <tbody id= "tripRows">
+                        <tbody id="tripRows">
                         </tbody>
                     </table>
                     <div id="pageSelector" class="pagination" style="display:none">
@@ -270,24 +280,19 @@
                     </div>
                 </div>                
             
-            </div>
-            
+            </div>            
+
             <div id="mapPanel">
                 <div id="map_controls_container">
+                    
                     <div id="map_controls">
                         <div class="map_control_label">Yhteensä: <strong id="total_sum"></strong> km</div>
                         <div class="map_control_label">Jäljellä: <strong id="distance_left"></strong> km</div>
-                        <!--
-                            <div class="map_control_label">Lat: <strong id="latitude"></strong></div>
-                            <div class="map_control_label">Lng: <strong id="longitude"></strong></div>
-                            <div class="map_control_label">Heading: <strong id="heading"></strong></div>
-                        -->
                     </div>
                     
                     <div id="street_view_controls" style="display:none">
-                        <div id="leg" class="map_control_label">Osuus: #1</div>
-                        <div id="leg1" class="map_control_label">Pvm: 5.1.2013</div>
-                        <div id="leg2" class="map_control_label">Osamatka: 62,50 km</div>
+                        <div class="map_control_label">Pvm: <span id="sv_date"></span></div>
+                        <div class="map_control_label">Kuva: <span id="sv_images"></span></div>
                     </div>
                     
                     <div id="mapOptions" class="dropdown">
@@ -301,25 +306,31 @@
                     </div>
                     
                 </div>
-                
+
                 <div id="mapContainer">
+
                     <div id="map_canvas"></div>
+
                     <div id="street_view" style="display:none">
+                        <div id="imageContainer"></div>
                         <div id="streetSign">
-                            <div class="streetSignText">Tukholma 350 km</div>
-                            <div class="streetSignText">Nizza 2560 km</div>
+                            <div class="streetSignText">Kemi <span id="toDest"></span> km</div>
+                            <div class="streetSignText">Nizza <span id="toNizza"></span> km</div>
                             <img class="streetSignIcon" src="images/arrow_down.png"></img>
                         </div>
-                        <div id="playbackButton">
+                        <div id="playbackButton" onclick="svPlay()">
                             <img class="playbackIcon" src="images/playback.png"></img>
                         </div>                        
                     </div>
                 </div>                                                 
+
             </div>
+
+            <div style="clear: both"></div>
         </div>
         
         <?php require("footer.php") ?>
-
+        
     </div>    
 </body>
 </html>
