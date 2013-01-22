@@ -137,7 +137,7 @@
                 position: new google.maps.LatLng(loc.lat, loc.lng),
                 map: map,
                 title:"Your current location!",
-                icon: "images/cyclist_marker.png"
+                icon: "images/cyclist_marker_red.png"
             });
         } else {
             locationMarker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));

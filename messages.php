@@ -35,7 +35,8 @@
         
         <?php require("header.php"); createHeader("messages"); ?>
 
-        <div id="content">            
+        <div id="content">
+            <h3>Here will be some stats and message board!</h3>
         </div>
         
         <?php require("footer.php") ?>
