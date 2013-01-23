@@ -29,7 +29,7 @@ function createHeader($page) {
                         } else {
                             echo '<li>';
                         }
-                        echo '<a href="team.php">Oma joukkue</a></li>';
+                        echo '<a href="team.php">Joukkueen tiedot</a></li>';
                                                 
                         if ($page == "messages") {
                             echo '<li class="active">';
@@ -41,7 +41,7 @@ function createHeader($page) {
                     echo '</ul>';
                                         
                     echo '<ul class="nav pull-right">';
-                        echo '<li><p class="navbar-text">Hei ' . $_SESSION['nick'] . '!</p></li>';
+                        echo '<li><p class="navbar-text">Tervetuloa ' . $_SESSION['nick'] . '!</p></li>';
                         echo '<li><button type="button" onclick="logout()" class="btn btn-primary">Kirjaudu ulos</button></li>';
                     echo '</ul>';
                 }
