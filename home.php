@@ -146,15 +146,18 @@
     
     function updateStatusDisplay() {
         $.get("trip_get.php", "op=getTotalDistance", function(data) {
-            var distanceData = JSON.parse(data);            
+            var distanceData = JSON.parse(data);
+            if (!distanceData.totalDistance) {
+                distanceData.totalDistance = "0.00";
+            }
             $("#total_sum").text(distanceData.totalDistance.replace(".",","));
             var distanceLeft = distanceData.routeLength - distanceData.totalDistance;
             distanceLeft = distanceLeft.toFixed(2);
-            if (distanceLeft < 0) {
-                distanceLeft = 0.00;
+            if (!distanceLeft) {                
+                distanceLeft = "0.00";
             }
             
-            $("#distance_left").text(distanceLeft.toString().replace(".",","));
+            $("#distance_left").text(distanceLeft.replace(".",","));
         });
         
         $.get("location_get.php", "", function(location) {

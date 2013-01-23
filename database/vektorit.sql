@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Palvelin: localhost
--- Luontiaika: 15.01.2013 klo 08:21
--- Palvelimen versio: 5.5.28
--- PHP:n versio: 5.3.10-1ubuntu3.4
+-- Luontiaika: 23.01.2013 klo 11:18
+-- Palvelimen versio: 5.5.29
+-- PHP:n versio: 5.3.10-1ubuntu3.5
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -23,14 +23,30 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Rakenne taululle `location`
+--
+
+CREATE TABLE IF NOT EXISTS `location` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `step` int(11) NOT NULL,
+  `user` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `step` (`step`,`user`),
+  KEY `user` (`user`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+-- --------------------------------------------------------
+
+--
 -- Rakenne taululle `route`
 --
 
 CREATE TABLE IF NOT EXISTS `route` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
+  `length` double NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -47,7 +63,20 @@ CREATE TABLE IF NOT EXISTS `step` (
   `route` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `route` (`route`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=620 ;
+
+-- --------------------------------------------------------
+
+--
+-- Rakenne taululle `team`
+--
+
+CREATE TABLE IF NOT EXISTS `team` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -62,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `trip` (
   `date` date NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user` (`user`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=18 ;
 
 -- --------------------------------------------------------
 
@@ -76,12 +105,21 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password` varchar(255) COLLATE utf8mb4_swedish_ci NOT NULL,
   `salt` varchar(255) COLLATE utf8mb4_swedish_ci NOT NULL,
   `nickname` varchar(255) COLLATE utf8mb4_swedish_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci AUTO_INCREMENT=38 ;
+  `team` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `team` (`team`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_swedish_ci AUTO_INCREMENT=43 ;
 
 --
 -- Rajoitteet vedostauluille
 --
+
+--
+-- Rajoitteet taululle `location`
+--
+ALTER TABLE `location`
+  ADD CONSTRAINT `location_ibfk_1` FOREIGN KEY (`step`) REFERENCES `step` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `location_ibfk_2` FOREIGN KEY (`user`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
 
 --
 -- Rajoitteet taululle `step`
@@ -94,6 +132,12 @@ ALTER TABLE `step`
 --
 ALTER TABLE `trip`
   ADD CONSTRAINT `trip_ibfk_1` FOREIGN KEY (`user`) REFERENCES `user` (`id`) ON UPDATE CASCADE;
+
+--
+-- Rajoitteet taululle `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`team`) REFERENCES `team` (`id`) ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

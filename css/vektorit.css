@@ -83,7 +83,16 @@ body {
 
 #registration_container {
     width: 50%;
-    margin: 120px auto;
+    margin: 60px auto 80px auto;
+}
+
+#team_create_container {
+    width: 50%;
+    margin: 150px auto;
+}
+
+#team_create {
+    margin-left: 20px;
 }
 
 #content {

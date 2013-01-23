@@ -9,6 +9,8 @@
         $('#pass_error').hide();        
         $('#nick_error').hide();
         $('#user_error').hide();
+        $('#team_error').hide();
+        $('#team_pass_error').hide();
         
         $('#registration_form').submit(function() {
             console.log("Submit: " + $(this).serialize());
@@ -39,6 +41,21 @@
                         $('.control-group-pass').removeClass('error');
                         $('#pass_error').hide();
                     });
+                } else if (data == "team_not_found") {
+                    $('.control-group-team').addClass('error');
+                    $('#team_error').show();
+                    $('input[name="team"]').one("keypress", function() {
+                        $('.control-group-team').removeClass('error');
+                        $('#team_error').hide();
+                    })
+                } else if (data == "incorrect_team_password") {
+                    $('input[name="team-pass"]').val('')
+                    $('.control-group-team-pass').addClass('error');
+                    $('#team_pass_error').show();
+                    $('input[name="team"]').one("keypress", function() {
+                        $('.control-group-team-pass').removeClass('error');
+                        $('#team_pass_error').hide();
+                    })
                 } else if (data == "ok") {
                     window.location.href = "home.php";
                 }
@@ -59,6 +76,12 @@
         <?php require("header.php"); createHeader("registration"); ?>
 
         <div id="content">
+            
+            <div style="float: right; margin-right: 10px">
+                <a href="create_team.php">Luo uusi joukkue täällä!</a>
+            </div>
+            <div style="clear: both"></div>
+
             <div id="registration_container">
                 <form id="registration_form" class="well">
                     <input name="op" type="hidden" value="register"></input>
@@ -78,21 +101,34 @@
                         </div>
                         <div class="control-group control-group-pass">
                             <div class="controls">
-                                <input name="pass" class="input-xlarge" autocomplete="off" type="password" placeholder="Luo salasana" tabindex="2" required></input>
+                                <input name="pass" class="input-xlarge" autocomplete="off" type="password" placeholder="Luo salasana" tabindex="3" required></input>
                                 <span id="pass_error" class="help-inline">Tarkista salasana</span>
                             </div>
                         </div>
                         <div class="control-group control-group-pass">
                             <div class="controls">
-                                <input name="pass2" class="input-xlarge" autocomplete="off" type="password" placeholder="Vahvista salasana" tabindex="2" required></input>
+                                <input name="pass2" class="input-xlarge" autocomplete="off" type="password" placeholder="Vahvista salasana" tabindex="4" required></input>
+                            </div>
+                        </div>
+                        <div class="control-group control-group-team">
+                            <div class="controls">
+                                <input name="team" class="input-xlarge" autocomplete="off" type="text" placeholder="Joukkueen nimi" tabindex="5" required></input>
+                                <span id="team_error" class="help-inline">Tarkista joukkue</span>
+                            </div>
+                        </div>
+                        <div class="control-group control-group-team-pass">
+                            <div class="controls">
+                                <input name="team-pass" class="input-xlarge" autocomplete="off" type="password" placeholder="Joukkueen salasana" tabindex="6" required></input>
+                                <span id="team_pass_error" class="help-inline">Tarkista salasana</span>
                             </div>
                         </div>
                         <div class="control-group">
                             <button type="submit" class="btn btn-primary">Luo uusi tili</button>
-                        </div>    
+                        </div>
                     </fieldset>							                    
                 </form>
-            </div>
+            </div>            
+  
         </div>
         
         <?php require("footer.php") ?>

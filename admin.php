@@ -27,6 +27,9 @@ if (isset($_POST["op"])) {
     if ($_POST["op"]=="register") {
         $result = handleRegistration();
     }     
+    else if ($_POST["op"]=="create_team") {
+        $result = handleTeamCreation();
+    }
     else {
         echo "unknown_operation";
     }
@@ -42,6 +45,8 @@ function handleRegistration() {
     $nick = $_POST["nick"];
     $pass = $_POST["pass"];
     $pass2 = $_POST["pass2"];
+    $team = $_POST["team"];
+    $team_pass = $_POST["team-pass"];
     
     if (DbUtil::user_exists($user)) {
         return "already_registered";
@@ -52,15 +57,42 @@ function handleRegistration() {
     else if ($pass != $pass2) {
         return "pass_not_match";
     }
+    else if (!DbUtil::team_exists($team)) {
+        return "team_not_found";
+    }
+    else if (!DbUtil::team_autenthicate($team,$team_pass)) {
+        return "incorrect_team_password";
+    }
+    
+    $team_id = DbUtil::team_id_by_name($team);
+    if (!$team_id)
+        die("Error in account creation!");
 
     $hashedPass = sha1($pass . $salt);
 
-    DbUtil::add_new_user($user,$nick,$hashedPass,$salt);
+    DbUtil::add_new_user($user,$nick,$hashedPass,$salt,$team_id);
     
     createSession($user);
     
     setInitialLocation($_SESSION['user_id']);
         
+    return "ok";
+}
+
+function handleTeamCreation() {
+    $team = $_POST["team"];
+    $pass = $_POST["pass"];
+    $pass2 = $_POST["pass2"];
+    
+    if (DbUtil::team_exists($team)) {
+        return "already_registered";
+    } 
+    else if ($pass != $pass2) {
+        return "pass_not_match";
+    }
+
+    DbUtil::add_new_team($team, $pass);
+    
     return "ok";
 }
 
@@ -92,8 +124,13 @@ function createSession($user) {
     if (!$user_id)
         die("Error in account creation!");
     
+    $team_id = DbUtil::team_id_by_user($user_id);
+    if (!$team_id)
+        die("Error in account creation!");
+    
     session_regenerate_id(true);
     $_SESSION['user_id'] = $user_id;
+    $_SESSION['team_id'] = $team_id;
     $_SESSION['nick'] = DbUtil::nickname($user_id);
     session_write_close();
 }

@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<?php require("head.php") ?>
-<?php require("session_handler.php") ?>
+<?php 
+require("head.php");
+require("session_handler.php");
+require('db_util.php');
+
+$teamName = DbUtil::teamname($_SESSION['team_id']);
+?>
 
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
+<script src="script/team_table.js"></script>
 
 </head>
 
@@ -12,10 +18,13 @@
 
         resizeContent();
         initializeMap();
-        
+                
+        updateTeamTable();        
     });
     
     function initializeMap() {
+        return;
+        
         // create map
         var mapOptions = {
             center: new google.maps.LatLng(65.017, 25.467),
@@ -49,34 +58,18 @@
         <div id="content">
             <div id="dataPanel">
                 <div id="dataTable">
-                    <h3>Team Simpsons</h3>
+                    <h3><?php echo $teamName ?></h3>
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th>#</th><th>Nimimerkki</th><th>Yhteensä</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr><td>1</td><td>Bart</td><td>3500 km</td></tr>
-                            <tr><td>2</td><td>Marge</td><td>2998 km</td></tr>
-                            <tr><td>3</td><td>Homer</td><td>1500 km</td></tr>
-                            <tr><td>4</td><td>Jasper Beardly</td><td>50 km</td></tr>
-                            <tr><td>5</td><td>Nn</td><td>0 km</td></tr>
-                            <tr><td>6</td><td>Nn</td><td>0 km</td></tr>
-                            <tr><td>7</td><td>Nn</td><td>0 km</td></tr>
-                            <tr><td>8</td><td>Nn</td><td>0 km</td></tr>
-                            <tr><td>9</td><td>Nn</td><td>0 km</td></tr>
-                            <tr><td>10</td><td>Nn</td><td>0 km</td></tr>
+                        <tbody id="teamRows">
                         </tbody>
                     </table>
-                    <div id="pageSelector" class="pagination">
-                        <ul>
-                            <li><a href="#">Prev</a></li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">Next</a></li>
+                    <div id="pageSelector" class="pagination" style="display:none">
+                        <ul id="pageList">
                         </ul>
                     </div>
                 </div>                

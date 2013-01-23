@@ -24,6 +24,14 @@ class DbUtil {
 
         return $query->rowCount()==0 ? false : true;
     }
+    
+    public static function team_exists($team) {
+        $query = self::db()->prepare("SELECT 1 FROM team WHERE name=?");
+        $query->bindParam(1,$team);
+        $query->execute();
+
+        return $query->rowCount()==0 ? false : true;
+    }
 
     public static function nick_exists($nick) {
         $query = self::db()->prepare("SELECT 1 FROM user WHERE nickname=?");
@@ -33,13 +41,23 @@ class DbUtil {
         return $query->rowCount()==0 ? false : true;
     }
 
-    public static function add_new_user($email,$nick,$pass,$salt) {
+    public static function add_new_user($email,$nick,$pass,$salt,$team) {
         error_log("add_new_user()");
-        $query = self::db()->prepare("INSERT INTO user (email,password,salt,nickname) VALUES(?,?,?,?)");
+        $query = self::db()->prepare("INSERT INTO user (email,password,salt,nickname,team) VALUES(?,?,?,?,?)");
         $query->bindParam(1,$email);
         $query->bindParam(2,$pass);
         $query->bindParam(3,$salt);
         $query->bindParam(4,$nick);
+        $query->bindParam(5,$team);
+
+        $query->execute();
+    }
+    
+    public static function add_new_team($team,$pass) {
+        error_log("add_new_team()");
+        $query = self::db()->prepare("INSERT INTO team (name,password) VALUES(?,?)");
+        $query->bindParam(1,$team);
+        $query->bindParam(2,$pass);
 
         $query->execute();
     }
@@ -63,12 +81,46 @@ class DbUtil {
         }    
     }
     
+    public static function team_id_by_name($team) {
+        $query = self::db()->prepare("SELECT id FROM team WHERE name=?");
+        $query->bindParam(1,$team);
+        $query->execute();
+
+        if ($query->rowCount()==1) {
+            $row = $query->fetch();
+            return $row["id"];
+        } else {
+            return 0;
+        }    
+    }
+    
+    public static function team_id_by_user($user) {
+        $query = self::db()->prepare("SELECT team FROM user WHERE id=?");
+        $query->bindParam(1,$user);
+        $query->execute();
+
+        if ($query->rowCount()==1) {
+            $row = $query->fetch();
+            return $row["team"];
+        } else {
+            return 0;
+        }    
+    }
+    
     public static function nickname($user) {
         $query = self::db()->prepare("SELECT nickname FROM user WHERE id=?");
         $query->bindParam(1,$user);
         $query->execute();
         $row = $query->fetch();
         return $row["nickname"];
+    }
+    
+    public static function teamname($team) {
+        $query = self::db()->prepare("SELECT name FROM team WHERE id=?");
+        $query->bindParam(1,$team);
+        $query->execute();
+        $row = $query->fetch();
+        return $row["name"];
     }
     
     public static function user_autenthicate($email,$pass) {
@@ -88,6 +140,15 @@ class DbUtil {
         } else {
             return false;
         }    
+    }
+    
+    public static function team_autenthicate($team,$pass) {
+        $query = self::db()->prepare("SELECT 1 FROM team WHERE name=? AND password=?");
+        $query->bindParam(1,$team);
+        $query->bindParam(2,$pass);
+        $query->execute();
+        
+        return $query->rowCount()==0 ? false : true;
     }
     
     public static function update_trip($user,$distance,$date) {
@@ -234,6 +295,13 @@ class DbUtil {
         $query->bindParam(1,$route);
         $query->bindParam(2,$fromDistance);
         $query->bindParam(3,$toDistance);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public static function get_team_distances($team) {
+        $query = self::db()->prepare("SELECT trip.user,SUM(trip.distance) AS distance, user.nickname FROM trip JOIN user ON trip.user = user.id GROUP BY trip.user");
+        $query->bindParam(1,$team);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
