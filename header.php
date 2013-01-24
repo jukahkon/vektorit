@@ -31,12 +31,12 @@ function createHeader($page) {
                         }
                         echo '<a href="team.php">Joukkueen tiedot</a></li>';
                                                 
-                        if ($page == "messages") {
+                        if ($page == "cafe") {
                             echo '<li class="active">';
                         } else {
                             echo '<li>';
                         }                        
-                        echo '<a href="messages.php">Vektorit Caf&#233;</a></li>';
+                        echo '<a href="cafe.php">Vektorit Caf&#233;</a></li>';
                                                 
                     echo '</ul>';
                                         

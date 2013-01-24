@@ -40,11 +40,12 @@ function showSreetViewImages(tripDate) {
             svSteps = steps;
         }
         
+        // todo
         $("#sv_images").text(svSteps.length +"/" + svSteps.length);
-        var distanceLeft = 109 - Math.floor(lastStep.distance);
-        $("#toDest").text(distanceLeft.toString());
-        var distanceNizza = 3500 - Math.floor(lastStep.distance);
-        $("#toNizza").text(distanceNizza.toString());
+        var distanceFromStart = Math.floor(lastStep.distance);
+        $("#toStart").text(distanceFromStart.toString());
+        var distanceToFinish = 3541 - Math.floor(lastStep.distance);
+        $("#toFinish").text(distanceToFinish.toString());
         
         // console.log(JSON.stringify(svSteps));
         

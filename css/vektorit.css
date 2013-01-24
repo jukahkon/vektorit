@@ -7,6 +7,10 @@
     padding-right: 5px;
 }
 
+.media-body {
+    margin-bottom: 20px;
+}
+
 #mapOptions .dropdown-menu {
     float: right;
     right: 0;
@@ -114,6 +118,11 @@ body {
     padding: 0 4px 0 0;
 }
 
+#dataTable > h3 {
+    color: #555555;
+    text-shadow: 1px 1px 0 white;
+}
+
 #dataTable > #pageSelector {
     margin-left: 0px;
 }
@@ -123,6 +132,12 @@ body {
     width: 690px;
     height: 550px;
     margin-left: 10px;
+}
+
+#messagePanel {
+    float: left;
+    width: 600px;
+    margin-left: 20px;
 }
 
 #map_controls_container {
@@ -162,14 +177,14 @@ mapContainer {
     position: relative;
     width: 690px;
     height: 500px;
-    background-color: blue;
+/*    background-color: blue;*/
 }
 
 #map_canvas {
     position: absolute;
     width: 690px;
     height: 500px;
-    background-color: green;
+/*    background-color: green;*/
 }
 
 #street_view {
@@ -240,6 +255,12 @@ td.selected {
 
 td.selected:last-child {
     background-image: url("../images/trip_selected.png");
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+
+#team_table_user_td {
+    background-image: url("../images/tshirt_red.png");
     background-repeat: no-repeat;
     background-position: right center;
 }

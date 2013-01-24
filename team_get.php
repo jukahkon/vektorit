@@ -9,6 +9,8 @@ $team_id = $_SESSION['team_id'];
 if (isset($_GET["op"])) {
     if ($_GET["op"]=="getTeamDistances") {
         echo json_encode(DbUtil::get_team_distances($team_id));
+    } else if ($_GET["op"]=="getTeamLocations") {
+        echo json_encode(DbUtil::get_team_locations($team_id));                
     } else {
         echo "unknown operation";
     }       

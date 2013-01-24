@@ -47,8 +47,13 @@ function showTeamPage(page) {
             distance = "0.00";
         }
         
-        var row = "<tr><td>" + (memberCount - i) + "</td><td>" + member.nickname + "</td><td>" + distance.replace(".",",") + " km</td></tr>";
-        $("#teamRows").append(row);
+        if (member.id == userId) {
+            var row = "<tr><td>" + (memberCount - i) + "</td><td>" + member.nickname + "</td><td id='team_table_user_td'>" + distance.replace(".",",") + "</td></tr>";
+            $("#teamRows").append(row);            
+        } else {
+            var row = "<tr><td>" + (memberCount - i) + "</td><td>" + member.nickname + "</td><td>" + distance.replace(".",",") + "</td></tr>";
+            $("#teamRows").append(row);
+        }        
     }
 }
 

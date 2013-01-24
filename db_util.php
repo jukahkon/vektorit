@@ -300,12 +300,26 @@ class DbUtil {
     }
     
     public static function get_team_distances($team) {
-        $query = self::db()->prepare("SELECT trip.user,SUM(trip.distance) AS distance, user.nickname FROM trip JOIN user ON trip.user = user.id GROUP BY trip.user");
+        $query = self::db()->prepare("SELECT user.id,user.nickname,SUM(trip.distance) AS distance FROM trip 
+                                          INNER JOIN user ON trip.user = user.id
+                                          WHERE user.team = ?
+                                          GROUP BY trip.user
+                                          ORDER BY distance DESC");
         $query->bindParam(1,$team);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
     
+    public static function get_team_locations($team) {
+        $query = self::db()->prepare("SELECT user.id,user.nickname,step.lat,step.lng FROM user
+                                         INNER JOIN location ON user.id = location.user 
+                                         INNER JOIN step ON location.step = step.id                                       
+                                         WHERE user.team = ?");
+        $query->bindParam(1,$team);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 } // class
 
 ?>

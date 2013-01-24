@@ -1,7 +1,7 @@
 
 var trips = [];
 var currentPage = 1;
-var tripsPerPage = 6;
+var tripsPerPage = 7;
     
 function updateTripTable() {
     getTripData(function() {
@@ -16,7 +16,7 @@ function updateTripTable() {
         currentPage = 1;
         showTripPage(currentPage);
         
-        updatePageSelector(currentPage);
+        updatePageSelector();
     });        
 }
 
@@ -47,43 +47,36 @@ function showTripPage(page) {
     }
 }
 
-function updatePageSelector(currentPage) {
-    var tripCount = trips.length;
-    var pageCount = tripCount / tripsPerPage;
-    var firstPage = 1;
-    var lastPage = Math.ceil(pageCount);
-    
-    $("#pageList").empty();
-    
-    $("#pageList").append("<li><a href='#' onclick='pageSelected(\"prev\"); return false;'>Edel.</a></li>");
-    
-    for (var i=firstPage; i <= lastPage; i++) {
-        var row;
-        if (i==currentPage) {
-            row = "<li class='active'>"
-        } else {
-            row = "<li>";
-        }
-        
-        row += "<a href='#' onclick='pageSelected(\"" + i + "\"); return false;'>" + i + "</a></li>";
-        
-        $("#pageList").append(row);
+function previousTripPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        showTripPage(currentPage);
+        updatePageSelector();
     }
-    
-    $("#pageList").append("<li><a href='#' onclick='pageSelected(\"next\"); return false;'>Seur.</a></li>");
 }
 
-function pageSelected(page) {
-    console.log("pageSelected(): " +page);
-    if (page=="prev") {
-        if (currentPage > 1)
-            currentPage--;
-    } else if (page=="next") {
-            currentPage++;
+function nextTripPage() {
+    var pageCount = Math.ceil(trips.length / tripsPerPage);
+    
+    if (currentPage < pageCount) {
+        currentPage++;
+        showTripPage(currentPage);
+        updatePageSelector();
+    }
+}
+
+function updatePageSelector() {
+    var pageCount = Math.ceil(trips.length / tripsPerPage);
+    
+    if (currentPage == 1) {
+        $("#prevTripPage").addClass("disabled");
     } else {
-        currentPage = parseInt(page);
+        $("#prevTripPage").removeClass("disabled");
     }
     
-    showTripPage(currentPage);
-    updatePageSelector(currentPage);
+    if (currentPage == pageCount) {
+        $("#nextTripPage").addClass("disabled");
+    } else {
+        $("#nextTripPage").removeClass("disabled");
+    }
 }

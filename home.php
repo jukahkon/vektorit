@@ -193,8 +193,8 @@
             
             console.log("Waypoints: " + JSON.stringify(waypoints));
             var request = {
-                origin: new google.maps.LatLng(65.012642,25.471491),
-                destination: new google.maps.LatLng(65.736313,24.56432),
+                origin: new google.maps.LatLng(orig.lat,orig.lng),
+                destination: new google.maps.LatLng(dest.lat,dest.lng),
                 travelMode: google.maps.TravelMode.DRIVING
             };
             
@@ -277,8 +277,10 @@
                         <tbody id="tripRows">
                         </tbody>
                     </table>
-                    <div id="pageSelector" class="pagination" style="display:none">
-                        <ul id="pageList">
+                    <div id="pageSelector" style="display:none">
+                        <ul class="pager">
+                            <li id="prevTripPage"><a href="#" onclick="previousTripPage(); return false;">Edellinen</a></li>
+                            <li id="nextTripPage"><a href="#" onclick="nextTripPage(); return false;">Seuraava</a></li>
                         </ul>
                     </div>
                 </div>                
@@ -317,8 +319,8 @@
                     <div id="street_view" style="display:none">
                         <div id="imageContainer"></div>
                         <div id="streetSign">
-                            <div class="streetSignText">Kemi <span id="toDest"></span> km</div>
-                            <div class="streetSignText">Nizza <span id="toNizza"></span> km</div>
+                            <div class="streetSignText">Oulu <span id="toStart"></span> km</div>
+                            <div class="streetSignText">Nizza <span id="toFinish"></span> km</div>
                             <img class="streetSignIcon" src="images/arrow_down.png"></img>
                         </div>
                         <div id="playbackButton" onclick="svPlay()">
