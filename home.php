@@ -16,6 +16,7 @@
     var locationMarker = null;
     var directionsService = null;
     var tripPath = null;
+    var currentLocation = null;
     
     $(document).ready( function () {
         $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy",
@@ -58,7 +59,11 @@
         });
         
         $('#menuItemOwnLocation').click(event, function() {
-            alert("Not implemented yet!");            
+            if (currentLocation) {
+                map.setCenter(new google.maps.LatLng(currentLocation.lat, currentLocation.lng));
+                map.setZoom(10);
+            }
+            
             event.preventDefault();            
         });
         
@@ -70,7 +75,7 @@
         
         updateStatusDisplay();
         
-        window.setTimeout(showCurrentLocation, 3000);
+        window.setTimeout(showCurrentLocation, 1000);
     });
     
     $(document).on("click","#tripRows tr",{}, function() {
@@ -119,9 +124,6 @@
         if (!map)
             return;
         
-//        map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
-//        map.setZoom(8);
-
         $.get("location_get.php", "", function(location) {
             var loc = JSON.parse(location);
             
@@ -135,7 +137,9 @@
                 });
             } else {
                 locationMarker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));
-            }        
+            }
+            
+            currentLocation = loc;
         });        
     }
     
@@ -194,7 +198,7 @@
                             <label>Kilometrit</label>
                                 <input id="distanceInput" type="text" placeholder="0,00"></input>
                             </fieldset>							
-                        <button type="submit" class="btn btn-success">Päivitä</button>
+                        <button type="submit" class="btn btn-primary">Päivitä</button>
                     </form>
                 </div>
                 
@@ -235,7 +239,7 @@
                         <a id="foo" class="map_control_label" data-toggle="dropdown" href="#">Valinnat<b class="caret"></b></a>
                         <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
                             <li><a id="menuItemMapMode" href="#">Katunäkymä</a></li>
-                            <li><a id="menuItemOwnLocation" href="#">Sijaintitiedot</a></li>
+                            <li><a id="menuItemOwnLocation" href="#">Oma sijainti</a></li>
                         </ul>
                     </div>
                     

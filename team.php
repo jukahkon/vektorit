@@ -15,10 +15,10 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
 
 <script type="text/javascript">
     var userId = <?php echo $_SESSION["user_id"] . ";" ?>
+    
+    var markers = [];
 
     $(document).ready( function () {
-
-        // resizeContent();
         updateTeamTable();
         
         initializeMap();
@@ -26,6 +26,12 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
         setTimeStamp();
         
         showRouteOnMap();
+        
+        $('#menuItemUpdate').click(event, function() {
+            updateTeamTable();
+            showTeamLocationsOnMap();            
+            event.preventDefault();            
+        });
 
         window.setTimeout(showTeamLocationsOnMap, 1000);
     });
@@ -34,7 +40,13 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
         console.log("showTeamLocationsOnMap():");
         $.get("team_get.php", "op=getTeamLocations", function(data) {
             console.log(data);
-            var locations = JSON.parse(data);            
+            var locations = JSON.parse(data);
+
+            for (var j=0; j<markers.length; j++) {
+                markers[j].setMap(null);
+            }
+            
+            markers.length = 0;
             
             for (var i=0; i < locations.length; i++) {
                 var loc = locations[i];
@@ -44,6 +56,8 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
                     title: loc.nickname,
                     icon: loc.id == userId ? "images/cyclist_marker_red.png" : "images/cyclist_marker_blue.png"
                 });
+                
+                markers.push(marker);
             }                       
         });        
     }
@@ -96,7 +110,7 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
                     <div id="mapOptions" class="dropdown">
                         <a id="foo" class="map_control_label" data-toggle="dropdown" href="#">Valinnat<b class="caret"></b></a>
                         <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
-                            <li><a id="menuItemShowRoute" href="#">Päivitä</a></li>
+                            <li><a id="menuItemUpdate" href="#">Päivitä</a></li>
                         </ul>
                     </div>
                     

@@ -68,6 +68,7 @@ body {
 
 #footer > hr {
     border-top: 2px solid darkgray;
+    margin-top: 10px;
 }
 
 #footer > a {
