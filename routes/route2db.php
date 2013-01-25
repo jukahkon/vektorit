@@ -5,8 +5,6 @@ include('../db_connect.php');
 try {
     resetTable('step');
     resetTable('route');
-    $distance = 0.0;
-    $bearing = 0;
     $routeId;
     
     $filename = $argv[1];
@@ -88,6 +86,12 @@ try {
 
         }
     }
+    
+    $setRouteDistance = $db->prepare("UPDATE route SET length=? WHERE id=?");
+    $setRouteDistance->bindParam(1,$distance);
+    $setRouteDistance->bindParam(2,$routeId);
+    $setRouteDistance->execute();
+    
 } catch (PDOException $e) {
     die("Error: " . $e->getMessage());
 }
@@ -100,8 +104,6 @@ function haversineDistance(
     $latitudeTo,
     $longitudeTo)
 {
-    $result = array();
-    
     $earthRadius = 6371; // km
     $dLat = deg2rad($latitudeTo-$latitudeFrom);
     $dLon = deg2rad($longitudeTo-$longitudeFrom);

@@ -22,22 +22,14 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
         updateTeamTable();
         
         initializeMap();
+        
+        setTimeStamp();
+        
         showRouteOnMap();
 
         window.setTimeout(showTeamLocationsOnMap, 1000);
     });
     
-    
-    function resizeContent() {
-        console.log("Container height: " +$('#container').height());
-        console.log("Header height: " +$('#header').outerHeight(true));
-        console.log("Footer height: " +$('#footer').outerHeight(true));
-        var contentHeight = $('#container').height() - $('#header').outerHeight(true) - $('#footer').outerHeight(true);
-        $('#content').height(contentHeight);
-        console.log("Content height: " +contentHeight);
-        $('#mapContainer').height(contentHeight);
-    }
-
     function showTeamLocationsOnMap() {
         console.log("showTeamLocationsOnMap():");
         $.get("team_get.php", "op=getTeamLocations", function(data) {
@@ -56,11 +48,19 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
         });        
     }
     
+    function setTimeStamp() {
+        var dateTime = new Date();
+        var date = dateTime.toLocaleDateString();
+        var time = dateTime.toLocaleTimeString();
+        
+        $("#mapTimeStamp").text(date + " " + time);
+    }
+    
 </script>
 
 </head>
 
-<body onresize="resizeContent()">
+<body>
     <div id="container">
         
         <?php require("header.php"); createHeader("team"); ?>
@@ -90,7 +90,7 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
                 <div id="map_controls_container">
                     
                     <div id="map_controls">
-                        <div class="map_control_label">Tilanne 24.1.2013 13:10</div>
+                        <div class="map_control_label">Tilanne <span id="mapTimeStamp"></span></div>
                     </div>
                     
                     <div id="mapOptions" class="dropdown">

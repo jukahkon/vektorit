@@ -9,8 +9,8 @@ function logout () {
 }
 
 function formatDate(date) {
-    var date = new Date(date);
-    var dateString = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+    var d = date.split("-");
+    var dateString = d[2] + "." + d[1] + "." + d[0];
     return dateString;
 }
 
@@ -33,6 +33,8 @@ function handleTripSubmit() {
         if (status=="ok") {
             updateTripTable();
             updateStatusDisplay();
+            showCurrentLocation();
+            $('#distanceInput').val("");
         }
     });
 

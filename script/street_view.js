@@ -42,12 +42,8 @@ function showSreetViewImages(tripDate) {
         
         // todo
         $("#sv_images").text(svSteps.length +"/" + svSteps.length);
-        var distanceFromStart = Math.floor(lastStep.distance);
-        $("#toStart").text(distanceFromStart.toString());
-        var distanceToFinish = 3541 - Math.floor(lastStep.distance);
-        $("#toFinish").text(distanceToFinish.toString());
         
-        // console.log(JSON.stringify(svSteps));
+        updateStreetSign(lastStep);
         
         // Show last image
         loadAndShowImage(lastStep);        
@@ -73,12 +69,7 @@ function showImage() {
     if (svState == "playback") {
         $("#sv_images").text((svCurrentImage+1) + "/" + svSteps.length);
         
-        var step = svSteps[svCurrentImage];
-        console.log("Step: " +JSON.stringify(step));
-        var distanceLeft = 109 - Math.floor(step.distance);
-        $("#toDest").text(distanceLeft.toString());
-        var distanceNizza = 3500 - Math.floor(step.distance);
-        $("#toNizza").text(distanceNizza.toString());
+        updateStreetSign(svSteps[svCurrentImage]);
         
         svTimer = window.setTimeout(showNextImage,3000);
     }
@@ -111,6 +102,14 @@ function showNextImage() {
         $("#playbackButton").fadeIn(500);
         svState = "idle";
     }
+}
+
+function updateStreetSign(step) {
+    var distanceFromStart = Math.floor(step.distance);
+    $("#toStart").text(distanceFromStart.toString());
+    // todo
+    var distanceToFinish = 3540 - Math.floor(step.distance);
+    $("#toFinish").text(distanceToFinish.toString());
 }
 
 

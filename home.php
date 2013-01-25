@@ -6,6 +6,7 @@
 <script src="assets/imagesloaded/jquery.imagesloaded.min.js"></script>
 <script src="script/trip_table.js"></script>
 <script src="script/street_view.js"></script>
+<script src="script/map_util.js"></script>
 
 </head>
 
@@ -15,15 +16,12 @@
     var locationMarker = null;
     var directionsService = null;
     var tripPath = null;
-    var currentLocation = null;
     
     $(document).ready( function () {
         $('#dateinput').datepicker( { showWeek : true, dateFormat: "d.m.yy",
                                       altFormat: "yy-mm-dd", altField: "#alt_date" } );
         $('#dateinput').datepicker( 'setDate', new Date() );
-        
-        initializeMap();
-        
+             
         $("#tripInputForm").submit(handleTripSubmit);
         
         $('#distanceInput').keypress(function(event) {
@@ -60,14 +58,19 @@
         });
         
         $('#menuItemOwnLocation').click(event, function() {
-            console.log("Show own location!");            
+            alert("Not implemented yet!");            
             event.preventDefault();            
         });
+        
+        initializeMap();
+        
+        showRouteOnMap();        
         
         updateTripTable();
         
         updateStatusDisplay();
-
+        
+        window.setTimeout(showCurrentLocation, 3000);
     });
     
     $(document).on("click","#tripRows tr",{}, function() {
@@ -112,36 +115,28 @@
         }
     });
 
-    function initializeMap() {
-        // return;
-        
-        // create map
-        var mapOptions = {
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-            disableDefaultUI: true
-	};
-	
-	map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);        
-    }
-    
-    function showCurrentLocation(loc) {
+    function showCurrentLocation() {
         if (!map)
             return;
         
-        map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
-        map.setZoom(8);
-        
-        if (!locationMarker) {
-            console.log("create marker!");
-            locationMarker = new google.maps.Marker({
-                position: new google.maps.LatLng(loc.lat, loc.lng),
-                map: map,
-                title:"Your current location!",
-                icon: "images/cyclist_marker_red.png"
-            });
-        } else {
-            locationMarker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));
-        }        
+//        map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
+//        map.setZoom(8);
+
+        $.get("location_get.php", "", function(location) {
+            var loc = JSON.parse(location);
+            
+            if (!locationMarker) {
+                console.log("create marker!");
+                locationMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(loc.lat, loc.lng),
+                    map: map,
+                    title:"Your current location!",
+                    icon: "images/cyclist_marker_red.png"
+                });
+            } else {
+                locationMarker.setPosition(new google.maps.LatLng(loc.lat, loc.lng));
+            }        
+        });        
     }
     
     function updateStatusDisplay() {
@@ -158,73 +153,9 @@
             }
             
             $("#distance_left").text(distanceLeft.replace(".",","));
-        });
-        
-        $.get("location_get.php", "", function(location) {
-            console.log("Location: " +JSON.stringify(location));
-            currentLocation = JSON.parse(location);
-            /*$("#latitude").text(currentLocation.lat);
-            $("#longitude").text(currentLocation.lng);
-            $("#heading").text(currentLocation.heading);*/
-            
-            showCurrentLocation(currentLocation);
-        });
+        });        
     }
-    
-    function showRouteOnMap() {
-        if (!directionsService) {
-            directionsService= new google.maps.DirectionsService();
-        }
-
-        if (!routeRenderer) {
-            options = {
-                suppressMarkers: true
-            };
-            
-            routeRenderer = new google.maps.DirectionsRenderer(options);
-            routeRenderer.setMap(map);
-        }
         
-        
-        $.get("route_get.php", "", function(data) {
-            var waypoints = JSON.parse(data);
-            var orig = waypoints[0];
-            var dest = waypoints[waypoints.length-1];
-            
-            console.log("Waypoints: " + JSON.stringify(waypoints));
-            var request = {
-                origin: new google.maps.LatLng(orig.lat,orig.lng),
-                destination: new google.maps.LatLng(dest.lat,dest.lng),
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-            
-            console.log("Route req: " + JSON.stringify(request));
-
-            directionsService.route(request, function(result,status){
-                if (status === google.maps.DirectionsStatus.OK) {
-                    routeRenderer.setDirections(result);
-                } else {
-                    console.log("showRouteOnMap failed: " +status);
-                }
-            });
-            
-            // create start and finish markers
-            new google.maps.Marker({
-                position: new google.maps.LatLng(orig.lat, orig.lng),
-                map: map,
-                title:"LÄHTÖ",
-                icon: { url: "images/start_marker.png", anchor: {x:3,y:60} }
-            });
-            
-            new google.maps.Marker({
-                position: new google.maps.LatLng(dest.lat, dest.lng),
-                map: map,
-                title:"MAALI",
-                icon: { url: "images/finish_marker.png", anchor: {x:0,y:60} }
-            });
-        });
-    }
-    
     function prepareStreetView() {
         // find selected trip
         var tripDate = $("#tripRows td.selected").parent().attr("date");
@@ -292,7 +223,7 @@
                     
                     <div id="map_controls">
                         <div class="map_control_label">Yhteensä: <strong id="total_sum"></strong> km</div>
-                        <div class="map_control_label">Jäljellä: <strong id="distance_left"></strong> km</div>
+                        <div class="map_control_label">Nizza: <strong id="distance_left"></strong> km</div>
                     </div>
                     
                     <div id="street_view_controls" style="display:none">
@@ -304,9 +235,7 @@
                         <a id="foo" class="map_control_label" data-toggle="dropdown" href="#">Valinnat<b class="caret"></b></a>
                         <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
                             <li><a id="menuItemMapMode" href="#">Katunäkymä</a></li>
-                            <li><a id="menuItemShowRoute" href="#">Näytä reitti</a></li>
-                            <li class="divider"></li>
-                            <li><a id="menuItemOwnLocation" href="#">Oma sijainti</a></li>
+                            <li><a id="menuItemOwnLocation" href="#">Sijaintitiedot</a></li>
                         </ul>
                     </div>
                     
