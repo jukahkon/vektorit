@@ -2,36 +2,50 @@
 <?php require("head.php") ?>
 <?php require("session_handler.php") ?>
 
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDulVn9smDJoBkTRXBQ7D7Cy2wrfnz8rHY&sensor=false"></script>
-
 <script type="text/javascript">
 
     $(document).ready( function () {
-
+        $("#messageInputForm").submit(handleMessageSubmit);
+        
+        updateMessageList();
     });
     
+    function handleMessageSubmit() {
+        console.log("Handle message submit()");
+        
+        if ($("#messageBox").val()!="") {
+            $.post("msg_post.php", $(this).serialize(), function(status) {
+                if (status=="ok") {
+                    console.log("done");
+                    updateMessageList();
+                    $("#messageBox").val("");
+                }
+            });
+        }
+
+        return false;
+    }
+    
+    function updateMessageList() {
+        $.get("msg_get.php", "", function(data) {
+            console.log("Messages: " +data);
+            var messages = JSON.parse(data);
+            
+            $("#messageContainer").empty();
+            
+            for (var i=0; i < messages.length; i++) {
+                var msg = messages[i];
+                var date = new Date(msg.time + " UTC");
+                
+                var element = "<div class='media-body'><h4 class='media-heading'>" 
+                              + msg.nickname + " " + date.toLocaleString() + "</h4>" + msg.text + "</div>"
+                
+                $("#messageContainer").append(element);
+            }
+        });        
+    }
+    
 </script>
-
-<style>
-    .media-body {
-        margin-bottom: 20px;
-    }
-    
-    #content {
-        width: 60%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    #messageBox {
-        width: 95%;
-    }
-    
-    h4 {
-        color: #555555;
-    }
-
-</style>
 
 </head>
 
@@ -40,35 +54,17 @@
         
         <?php require("header.php"); createHeader("cafe"); ?>
 
-        <div id="content">
-            <form id="tripInputForm" class="well">
-                <fieldset>
-                    <label>Kirjoita viesti:</label>
+        <div id="cafeContent">
+            <form id="messageInputForm">
+                <fieldset>                    
                     <div class="controls">
-                        <textarea id="messageBox" maxlength="140" rows="2"></textarea>
+                        <textarea id="messageBox" name="message" placeholder="Kirjoita viesti" maxlength="140" rows="2"></textarea>
                     </div>							
                 </fieldset>                            
-                <button type="submit" class="btn btn-warning">Lähetä</button>
+                <button type="submit" class="btn btn-primary">Valmis</button>
             </form>
            
-            <div>
-                <div class="media-body">
-                    <h4 class="media-heading">Bart 24.1.2013 15:04</h4>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">JuhaK 23.1.2013 10:20</h4>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-                <div class="media-body">
-                    <h4 class="media-heading">Homer 22.1.2013 01:15</h4>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-                    <div class="media-body">
-                    <h4 class="media-heading">Bart 22.1.2013 21:01</h4>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-                <button class="btn">Lisää viestejä</button>
+            <div id="messageContainer">
             </div>
 
         </div>

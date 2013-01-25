@@ -319,6 +319,23 @@ class DbUtil {
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public static function add_new_message($user,$message) {
+        error_log("add_new_message()");
+        $query = self::db()->prepare("INSERT INTO message (text,user) VALUES(?,?)");
+        $query->bindParam(1,$message);
+        $query->bindParam(2,$user);
+        $query->execute();
+    }
+    
+    public static function get_messages() {
+        error_log("get_messages()");
+        $query = self::db()->prepare("SELECT message.text,user.nickname,message.time FROM message 
+                                      INNER JOIN user ON message.user = user.id
+                                      ORDER BY message.time DESC");
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 } // class
 

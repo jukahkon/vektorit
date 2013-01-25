@@ -255,6 +255,37 @@ td.selected:last-child {
     background-position: right center;
 }
 
+.media-body {
+    margin-bottom: 20px;
+}
+
+#cafeContent {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    min-height: 500px;
+    background-image: url("../images/coffee_cup.png");
+    background-repeat: no-repeat;
+    background-position: right bottom;
+}
+
+#messageContainer {
+    width: 70%;    
+}
+
+#messageBox {
+    width: 95%;
+}
+
+h4 {
+    color: #555555;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none;
+}
 
 
 
