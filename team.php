@@ -92,8 +92,10 @@ $teamName = DbUtil::teamname($_SESSION['team_id']);
                         <tbody id="teamRows">
                         </tbody>
                     </table>
-                    <div id="pageSelector" class="pagination" style="display:none">
-                        <ul id="pageList">
+                    <div id="pageSelector" style="display:none">
+                        <ul class="pager">
+                            <li id="prevMemberPage"><a href="#" onclick="previousMemberPage(); return false;">Edellinen</a></li>
+                            <li id="nextMemberPage"><a href="#" onclick="nextMemberPage(); return false;">Seuraava</a></li>
                         </ul>
                     </div>
                 </div>                

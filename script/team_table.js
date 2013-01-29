@@ -5,20 +5,20 @@ var membersPerPage = 10;
     
 function updateTeamTable() {
     getTeamData(function() {
-        console.log("Team data: " +teamData);
+        console.log("Team data 2: " +JSON.stringify(teamData));
         
         if (teamData.length > 0) {
             $("#dataTable").show();
         }
         
-        if (teamData.length > membersPerPage) {
+        if (teamData.length > 0) {
             $("#pageSelector").show();
         }
         
         currentPage = 1;
-        showTeamPage(currentPage);
+        showMemberPage(currentPage);
         
-        updatePageSelector(currentPage);
+        updatePageSelector();
     });        
 }
 
@@ -30,7 +30,7 @@ function getTeamData(callback) {
     });
 }
 
-function showTeamPage(page) {
+function showMemberPage(page) {
     var memberCount = teamData.length;
     var firstMember = (page - 1) * membersPerPage;
     var lastMember = firstMember + membersPerPage;
@@ -57,47 +57,39 @@ function showTeamPage(page) {
     }
 }
 
-function updatePageSelector(currentPage) {
-    var memberCount = teamData.length;
-    var pageCount = memberCount / membersPerPage;
-    var firstPage = 1;
-    var lastPage = Math.ceil(pageCount);
-    
-    $("#pageList").empty();
-    
-    $("#pageList").append("<li><a href='#' onclick='pageSelected(\"prev\"); return false;'>Edel.</a></li>");
-    
-    for (var i=firstPage; i <= lastPage; i++) {
-        var row;
-        if (i==currentPage) {
-            row = "<li class='active'>"
-        } else {
-            row = "<li>";
-        }
-        
-        row += "<a href='#' onclick='pageSelected(\"" + i + "\"); return false;'>" + i + "</a></li>";
-        
-        $("#pageList").append(row);
+function previousMemberPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        showMemberPage(currentPage);
+        updatePageSelector();
     }
-    
-    $("#pageList").append("<li><a href='#' onclick='pageSelected(\"next\"); return false;'>Seur.</a></li>");
 }
 
-function pageSelected(page) {
-    console.log("pageSelected(): " +page);
-    if (page=="prev") {
-        if (currentPage > 1)
-            currentPage--;
-    } else if (page=="next") {
-            currentPage++;
+function nextMemberPage() {
+    var pageCount = Math.ceil(teamData.length / membersPerPage);
+    
+    if (currentPage < pageCount) {
+        currentPage++;
+        showMemberPage(currentPage);
+        updatePageSelector();
+    }
+}
+
+function updatePageSelector() {
+    var pageCount = Math.ceil(teamData.length / membersPerPage);
+    
+    if (currentPage == 1) {
+        $("#prevMemberPage").addClass("disabled");
     } else {
-        currentPage = parseInt(page);
+        $("#prevMemberPage").removeClass("disabled");
     }
     
-    showTeamPage(currentPage);
-    updatePageSelector(currentPage);
+    if (currentPage == pageCount) {
+        $("#nextMemberPage").addClass("disabled");
+    } else {
+        $("#nextMemberPage").removeClass("disabled");
+    }
 }
-
 
 
 
