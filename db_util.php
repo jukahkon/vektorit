@@ -304,7 +304,10 @@ class DbUtil {
                                           INNER JOIN user ON trip.user = user.id
                                           WHERE user.team = ?
                                           GROUP BY trip.user
-                                          ORDER BY distance DESC");
+                                      UNION
+                                          (SELECT id, nickname, 0.00 FROM user WHERE NOT EXISTS
+                                          (SELECT 1 FROM trip WHERE user=user.id))
+                                      ORDER BY distance DESC");
         $query->bindParam(1,$team);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
@@ -328,11 +331,13 @@ class DbUtil {
         $query->execute();
     }
     
-    public static function get_messages() {
+    public static function get_messages($team_id) {
         error_log("get_messages()");
         $query = self::db()->prepare("SELECT message.text,user.nickname,message.time FROM message 
                                       INNER JOIN user ON message.user = user.id
+                                      WHERE user.team = ?
                                       ORDER BY message.time DESC");
+        $query->bindParam(1,$team_id);
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }

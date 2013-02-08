@@ -11,7 +11,7 @@ function updateTeamTable() {
             $("#dataTable").show();
         }
         
-        if (teamData.length > 0) {
+        if (teamData.length > membersPerPage) {
             $("#pageSelector").show();
         }
         
